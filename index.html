@@ -25,7 +25,7 @@ a{color:var(--or)}
 
 /* nav */
 nav.top{position:sticky;top:0;z-index:20;background:var(--ink);border-bottom:1px solid #2a2a2a}
-nav.top .wrap{display:flex;align-items:center;gap:20px;min-height:56px;flex-wrap:wrap}
+nav.top .wrap{max-width:1260px;display:flex;align-items:center;gap:20px;min-height:56px;flex-wrap:wrap}
 nav.top .brand{font-family:var(--display);font-size:24px;letter-spacing:.02em;color:#fff;text-decoration:none;margin-right:auto}
 nav.top .brand b{color:var(--or);font-weight:400}
 nav.top .links{display:flex;gap:4px;flex-wrap:wrap}
@@ -36,9 +36,22 @@ nav.top .cta{background:var(--or);color:#000;text-decoration:none;font-weight:70
 /* hero */
 header.hero{background:var(--or);color:#000;position:relative;overflow:hidden}
 .hero .wrap{position:relative;padding-top:40px;padding-bottom:40px}
-.hero .blk{position:absolute;width:200px;height:120px}
-.hero .blk.b{right:120px;top:28px;background:var(--blau);transform:rotate(8deg)}
-.hero .blk.r{right:40px;top:80px;background:var(--grana);transform:rotate(-12deg);color:#fff;font-family:var(--display);font-size:64px;display:flex;align-items:center;justify-content:center}
+.hero .cat{position:absolute;right:16px;top:4px;width:clamp(300px,28vw,400px);pointer-events:none}
+.hero .cat svg{display:block;width:100%;height:auto;overflow:visible}
+.hero .cat .bob{animation:catbob 2.6s ease-in-out infinite}
+.hero .cat .tail{transform-box:fill-box;transform-origin:5% 85%;animation:cattail 1.6s ease-in-out infinite}
+.hero .cat .eye{transform-box:fill-box;transform-origin:center;animation:catblink 4.5s infinite}
+.hero .cat .head{transform-box:fill-box;transform-origin:50% 90%;animation:cathead 5s ease-in-out infinite}
+.hero .cat .ball{animation:catball 1.3s cubic-bezier(.5,0,.5,1) infinite}
+.hero .cat .sign{transform-box:fill-box;transform-origin:50% 0;animation:catsign 3.2s ease-in-out infinite}
+@keyframes catbob{50%{transform:translateY(-5px)}}
+@keyframes cattail{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(12deg)}}
+@keyframes catblink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes cathead{0%,40%,100%{transform:rotate(0)}50%,70%{transform:rotate(-6deg)}}
+@keyframes catball{0%,100%{transform:translateY(0)}50%{transform:translateY(-34px)}}
+@keyframes catsign{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@media (prefers-reduced-motion:reduce){.hero .cat *{animation:none!important}}
+@media (max-width:1000px){.hero .cat{display:none}}
 .hero h1{font-family:var(--display);font-weight:400;font-size:clamp(84px,15vw,190px);line-height:.86;margin:.3em 0 10px;position:relative}
 .hero .cnline{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-weight:900;font-size:clamp(22px,3vw,32px)}
 .hero .cnline .inv{background:#000;color:#fff;padding:0 12px}
@@ -132,7 +145,6 @@ footer .big .nw{white-space:nowrap}
 footer .hand{font-family:var(--hand);font-size:34px;transform:rotate(-3deg);display:inline-block;margin:16px 0 28px}
 footer p{color:var(--line);font-size:13px;max-width:760px}
 @media (max-width:640px){
-  .hero .blk,.hero .blk.r{display:none}
   .mean .n{width:68px;font-size:46px}
   .day .d{width:72px}
 }
@@ -147,7 +159,7 @@ footer p{color:var(--line);font-size:13px;max-width:760px}
 .lang button{min-height:40px;padding:6px 10px;background:transparent;color:#fff;font-family:var(--label);font-size:13px;letter-spacing:.08em;font-weight:600}
 .lang button[aria-pressed="true"]{background:var(--or);color:#000}
 nav.top .menu-btn{display:none;min-height:44px;padding:10px 14px;background:transparent;color:#fff;border:1px solid #4a4a4a;font-weight:700;align-items:center;gap:8px;cursor:pointer}
-@media (max-width:1360px){
+@media (max-width:1180px){
   nav.top .links{display:none;order:5;width:100%;flex-direction:column;gap:0;border-top:1px solid #2a2a2a;padding:4px 0 8px;max-height:70vh;overflow-y:auto}
   nav.top .links a{border-bottom:1px solid #222;font-size:15px}
   nav.top.open .links{display:flex}
@@ -184,15 +196,39 @@ a.btn-or{display:inline-flex;align-items:center;text-decoration:none;min-height:
       <button type="button" data-lang="en">EN</button>
       <button type="button" data-lang="ko">한국어</button>
     </div>
-    <a class="cta" href="#register" data-i="nav_reg"></a>
     <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav-links"><span aria-hidden="true">☰</span><span data-i="nav_menu"></span></button>
   </div>
 </nav>
 
 <header class="hero" id="top">
   <div class="wrap">
-    <div class="blk b" aria-hidden="true"></div>
-    <div class="blk r" aria-hidden="true">20 ANYS</div>
+    <div class="cat" aria-hidden="true">
+      <svg viewBox="0 0 300 240" width="300" height="240">
+        <ellipse cx="170" cy="226" rx="78" ry="8" fill="rgba(0,0,0,.18)"/>
+        <g class="sign"><rect x="6" y="14" width="118" height="46" fill="#A50044" stroke="#000" stroke-width="4" transform="rotate(-8 65 37)"/><text x="65" y="49" text-anchor="middle" transform="rotate(-8 65 37)" fill="#fff" font-family="Bebas Neue, Oswald, sans-serif" font-size="32" letter-spacing="1">20 ANYS</text></g>
+        <g class="ball"><circle cx="262" cy="206" r="17" fill="#fff" stroke="#000" stroke-width="4"/><path d="M262 197 l8 6 -3 9 h-10 l-3 -9 z" fill="#000"/></g>
+        <g class="bob">
+          <path class="tail" d="M208 196 C250 196 262 152 244 124 C238 114 225 118 230 129 C242 150 236 176 206 180 Z" fill="#FFF4E0" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+          <clipPath id="jersey"><path d="M125 204 C120 164 135 138 170 138 C205 138 220 164 215 204 Z"/></clipPath>
+          <g clip-path="url(#jersey)"><rect x="118" y="130" width="104" height="80" fill="#004D98"/><rect x="134" y="130" width="18" height="80" fill="#A50044"/><rect x="170" y="130" width="18" height="80" fill="#A50044"/><rect x="206" y="130" width="18" height="80" fill="#A50044"/></g>
+          <path d="M125 204 C120 164 135 138 170 138 C205 138 220 164 215 204 Z" fill="none" stroke="#000" stroke-width="4"/>
+          <ellipse cx="150" cy="205" rx="15" ry="9" fill="#FFF4E0" stroke="#000" stroke-width="4"/>
+          <ellipse cx="190" cy="205" rx="15" ry="9" fill="#FFF4E0" stroke="#000" stroke-width="4"/>
+          <g class="head">
+            <path d="M118 80 L122 28 L158 58 Z M222 80 L218 28 L182 58 Z" fill="#FFF4E0" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M126 66 L128 42 L146 58 Z M214 66 L212 42 L194 58 Z" fill="#FF9FB0"/>
+            <ellipse cx="170" cy="100" rx="60" ry="50" fill="#FFF4E0" stroke="#000" stroke-width="4"/>
+            <g class="eye"><ellipse cx="148" cy="98" rx="7" ry="10" fill="#000"/><circle cx="150" cy="94" r="2.5" fill="#fff"/></g>
+            <g class="eye"><ellipse cx="192" cy="98" rx="7" ry="10" fill="#000"/><circle cx="194" cy="94" r="2.5" fill="#fff"/></g>
+            <ellipse cx="134" cy="116" rx="10" ry="5" fill="#FF9FB0" opacity=".75"/>
+            <ellipse cx="206" cy="116" rx="10" ry="5" fill="#FF9FB0" opacity=".75"/>
+            <path d="M164 110 h12 l-6 6 z" fill="#F07A8C" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M161 122 Q165.5 128 170 122 Q174.5 128 179 122" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+            <path d="M126 106 l-22 -4 M126 114 l-22 4 M214 106 l22 -4 M214 114 l22 4" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+          </g>
+        </g>
+      </svg>
+    </div>
     <div class="label">The 1st Barça Asia Penya Cup · Shanghai 2027</div>
     <h1>MÉS QUE<br>UN GOL</h1>
     <div class="cnline"><span data-i="hero_t1"></span><span class="inv" data-i="hero_t2"></span></div>
@@ -397,8 +433,8 @@ var FORM_ENDPOINT = (window.APC_CONFIG&&window.APC_CONFIG.FORM_ENDPOINT)||"";
 
 var MAIL='<b>'+OFFICIAL_EMAIL+'</b>';
 var T = {
-zh:{nav_info:"杯赛信息",in_title:"杯赛信息",in_nm_k:"赛事名称",in_nm_v:"第一届巴萨亚洲杯之 Més que un Gol（不止进球）<br>Barça Asia Penya Cup 2027",in_dt_k:"时间",in_dt_v:"2027 年 6 月 11 日（周五）至 13 日（周日）<br>比赛日：6 月 12 日（周六）",in_pl_k:"地点",in_pl_v:"中国上海 · 球场与晚宴场地 <em class=\"tbd\">待公布</em>",in_ho_k:"主办",in_ho_v:"Penya Blaugrana Shanghai（巴萨红蓝魂官方球迷会，官方 Penya 编号 2369）· 20 周年活动",in_el_k:"参赛资格",in_el_v:"巴萨官方 Penya；参赛名额 3–4 支亚洲 Penya",in_gu_k:"嘉宾",in_gu_v:"世界各地官方 Penya 可派嘉宾代表参加，不占参赛名额",in_fm_k:"赛制",in_fm_v:"单循环，积分排名；比赛人制、单场时长与规则 <em class=\"tbd\">待公布</em>",in_sq_k:"报名人数",in_sq_v:"每队球员人数上限 <em class=\"tbd\">待公布</em>；随行球迷人数不限，请在报名时填写",in_co_k:"费用",in_co_v:"原则上各 Penya 自理往返交通与住宿；本地接待与费用细则 <em class=\"tbd\">待公布</em>",in_ch_k:"公益",in_ch_v:"所有公益收益全额捐赠巴萨基金会，赛后 14 天内公示",in_rg_k:"报名",in_rg_v:"本网站在线报名 · 截止日期 <em class=\"tbd\">待公布</em>",in_ct_k:"联系",in_ct_v:"fcbshanghai2007@gmail.com · 中文 / English / Español / 한국어",in_note:"标注“待公布”的内容确定后将在本页更新。",
- nav_about:"参赛 Penya",nav_cases:"公益案例",cs_title:"Penya × 巴萨基金会：公益案例",cs_intro:"巴萨红蓝魂已三次以 Penya 的名义支持巴萨基金会。我们希望从亚洲杯开始，让更多亚洲 Penya 一起加入，把球迷的热爱变成对孩子的实际帮助。",cs1_h:"认购 100 条红蓝手环，到访巴萨基金会",cs1_p:"会长率代表团到访基金会了解项目，认购 100 条手环支持“红蓝手环”项目，帮助长期住院和重病的儿童与青少年。基金会总干事 Marta Segú 博士接待，俱乐部社会事务负责人和 Penyes 部门负责人在场。",cs2_h:"第二次认购 100 条红蓝手环",cs2_p:"代表团在巴塞罗那再次认购 100 条手环，由俱乐部负责社会事务的董事 Josep Ignasi Macià 接待。",cs3_h:"第三次捐赠：1,150 欧元",cs3_p:"巴萨红蓝魂向巴萨基金会捐赠 1,150 欧元，这是对基金会的第三次支持。",cs_read:"阅读官方报道 →",cs_join_h:"邀请亚洲 Penya 一起加入",cs_join_p:"在 6 月 11–13 日的亚洲杯上，各 Penya 可以一起认购红蓝手环、参与进球公益和晚宴爱心拍卖，让每一个 Penya 都成为爱心接力的一棒。",nav_sup:"支持与合作",sp_title:"寻求的支持与合作",sp1:"巴萨基金会 · 以足球连接善意，传递公益精神与社会责任。",sp2:"巴萨球迷会部门 · 连接官方 Penyes，推动跨地区交流与长期友谊。",sp_status:"沟通中",sp_h:"一份热爱，一份善意",sp_p:"我们正在与巴萨基金会和 FC Barcelona Penyes Department 沟通支持与合作方式，希望从首届上海站出发，把球迷交流与爱心传递连在一起，让亚洲 Penya 的友谊延续为长期的公益合作。",d2_d:"晚宴公布“进球公益”当日累计",r5_h:"巴萨冠军奖杯巡展 · 爱心拍卖",r5_p:"拟申请西甲、国王杯或欧冠奖杯展示，在 6.12 晚宴设冠军荣誉展区、历史讲解与会员合影；同场举行签名球衣爱心拍卖，并接受自愿捐款。",r5_n:"展品、原件或官方复制品、数量及使用权限以俱乐部书面批准为准；展览独立于赛事奖项，不作为拍卖品，默认不允许触摸或举杯。",r5_s:"待官方批准",g_trophy:"晚宴爱心收益",g_trophy_n:"奖杯巡展与爱心拍卖，扣除成本后捐赠巴萨基金会",gu_title:"国际嘉宾 Penya",gu_intro:"除亚洲参赛队外，来自英国、西班牙、法国、美国及世界其他地区的官方 Penya 也可作为嘉宾代表加入：出席欢迎晚宴、观赛、参与爱心传递和圆桌交流，也可视情况参加友谊赛。嘉宾为可选项，不占参赛名额。",gu_empty:"嘉宾名单待公布。",f_guests:"+ 国际嘉宾 Penya（可选）",l_type:"参与方式",o_team:"参赛队伍（亚洲 Penya）",o_guest:"嘉宾代表（不参加正式比赛）",l_region:"地区",o_asia:"亚洲",o_europe:"欧洲",o_americas:"美洲",o_other:"其他",nav_menu:"目录",pk_choose:"请选择 Penya",pk_other:"其他（请填写 Penya 名称）",ph_penya:"请填写 Penya 全称",pg_us:"美国",pg_es:"西班牙",pg_eu:"欧洲",pg_asia:"亚洲",nav_prog:"日程",nav_fix:"赛程",nav_g4g:"进球公益",nav_relay:"爱心传递",nav_reg:"报名",
+zh:{nav_info:"杯赛",in_title:"杯赛信息",in_nm_k:"赛事名称",in_nm_v:"第一届巴萨亚洲杯之 Més que un Gol（不止进球）<br>Barça Asia Penya Cup 2027",in_dt_k:"时间",in_dt_v:"2027 年 6 月 11 日（周五）至 13 日（周日）<br>比赛日：6 月 12 日（周六）",in_pl_k:"地点",in_pl_v:"中国上海 · 球场与晚宴场地 <em class=\"tbd\">待公布</em>",in_ho_k:"主办",in_ho_v:"Penya Blaugrana Shanghai（巴萨红蓝魂官方球迷会，官方 Penya 编号 2369）· 20 周年活动",in_el_k:"参赛资格",in_el_v:"巴萨官方 Penya；参赛名额 3–4 支亚洲 Penya",in_gu_k:"嘉宾",in_gu_v:"世界各地官方 Penya 可派嘉宾代表参加，不占参赛名额",in_fm_k:"赛制",in_fm_v:"单循环，积分排名；比赛人制、单场时长与规则 <em class=\"tbd\">待公布</em>",in_sq_k:"报名人数",in_sq_v:"每队球员人数上限 <em class=\"tbd\">待公布</em>；随行球迷人数不限，请在报名时填写",in_co_k:"费用",in_co_v:"原则上各 Penya 自理往返交通与住宿；本地接待与费用细则 <em class=\"tbd\">待公布</em>",in_ch_k:"公益",in_ch_v:"所有公益收益全额捐赠巴萨基金会，赛后 14 天内公示",in_rg_k:"报名",in_rg_v:"本网站在线报名 · 截止日期 <em class=\"tbd\">待公布</em>",in_ct_k:"联系",in_ct_v:"fcbshanghai2007@gmail.com · 中文 / English / Español / 한국어",in_note:"标注“待公布”的内容确定后将在本页更新。",
+ nav_about:"队伍",nav_cases:"案例",cs_title:"Penya × 巴萨基金会：公益案例",cs_intro:"巴萨红蓝魂已三次以 Penya 的名义支持巴萨基金会。我们希望从亚洲杯开始，让更多亚洲 Penya 一起加入，把球迷的热爱变成对孩子的实际帮助。",cs1_h:"认购 100 条红蓝手环，到访巴萨基金会",cs1_p:"会长率代表团到访基金会了解项目，认购 100 条手环支持“红蓝手环”项目，帮助长期住院和重病的儿童与青少年。基金会总干事 Marta Segú 博士接待，俱乐部社会事务负责人和 Penyes 部门负责人在场。",cs2_h:"第二次认购 100 条红蓝手环",cs2_p:"代表团在巴塞罗那再次认购 100 条手环，由俱乐部负责社会事务的董事 Josep Ignasi Macià 接待。",cs3_h:"第三次捐赠：1,150 欧元",cs3_p:"巴萨红蓝魂向巴萨基金会捐赠 1,150 欧元，这是对基金会的第三次支持。",cs_read:"阅读官方报道 →",cs_join_h:"邀请亚洲 Penya 一起加入",cs_join_p:"在 6 月 11–13 日的亚洲杯上，各 Penya 可以一起认购红蓝手环、参与进球公益和晚宴爱心拍卖，让每一个 Penya 都成为爱心接力的一棒。",nav_sup:"支持",sp_title:"寻求的支持与合作",sp1:"巴萨基金会 · 以足球连接善意，传递公益精神与社会责任。",sp2:"巴萨球迷会部门 · 连接官方 Penyes，推动跨地区交流与长期友谊。",sp_status:"沟通中",sp_h:"一份热爱，一份善意",sp_p:"我们正在与巴萨基金会和 FC Barcelona Penyes Department 沟通支持与合作方式，希望从首届上海站出发，把球迷交流与爱心传递连在一起，让亚洲 Penya 的友谊延续为长期的公益合作。",d2_d:"晚宴公布“进球公益”当日累计",r5_h:"巴萨冠军奖杯巡展 · 爱心拍卖",r5_p:"拟申请西甲、国王杯或欧冠奖杯展示，在 6.12 晚宴设冠军荣誉展区、历史讲解与会员合影；同场举行签名球衣爱心拍卖，并接受自愿捐款。",r5_n:"展品、原件或官方复制品、数量及使用权限以俱乐部书面批准为准；展览独立于赛事奖项，不作为拍卖品，默认不允许触摸或举杯。",r5_s:"待官方批准",g_trophy:"晚宴爱心收益",g_trophy_n:"奖杯巡展与爱心拍卖，扣除成本后捐赠巴萨基金会",gu_title:"国际嘉宾 Penya",gu_intro:"除亚洲参赛队外，来自英国、西班牙、法国、美国及世界其他地区的官方 Penya 也可作为嘉宾代表加入：出席欢迎晚宴、观赛、参与爱心传递和圆桌交流，也可视情况参加友谊赛。嘉宾为可选项，不占参赛名额。",gu_empty:"嘉宾名单待公布。",f_guests:"+ 国际嘉宾 Penya（可选）",l_type:"参与方式",o_team:"参赛队伍（亚洲 Penya）",o_guest:"嘉宾代表（不参加正式比赛）",l_region:"地区",o_asia:"亚洲",o_europe:"欧洲",o_americas:"美洲",o_other:"其他",nav_menu:"目录",pk_choose:"请选择 Penya",pk_other:"其他（请填写 Penya 名称）",ph_penya:"请填写 Penya 全称",pg_us:"美国",pg_es:"西班牙",pg_eu:"欧洲",pg_asia:"亚洲",nav_prog:"日程",nav_fix:"赛程",nav_g4g:"公益",nav_relay:"爱心传递",nav_reg:"报名",
  hero_t1:"第一届巴萨亚洲杯之",hero_t2:"不止进球",hero_hand:"红蓝爱心接力",
  f_date:"2027 年 6 月 11–13 日（暂定）· 周五至周日",f_city:'上海 · 场地 <em class="tbd">待公布</em>',f_teams:"3–4 支亚洲官方 Penya 队伍",f_count:"距开幕",
  cd_d:"天",cd_h:"时",cd_m:"分",
