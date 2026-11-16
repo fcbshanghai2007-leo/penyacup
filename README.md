@@ -4,7 +4,7 @@
 
 | 部分 | 用途 | 服务 |
 | --- | --- | --- |
-| 网页托管 | 放网站文件，绑定 penyacup.asia | Vercel |
+| 网页托管 | 放网站文件，绑定 penyacup.asia | GitHub Pages |
 | 数据库 | 实时比分、进球公益、参赛名单、报名记录、管理员登录 | Supabase |
 | 邮件转发 | 报名自动发到 fcbshanghai2007@gmail.com | Formspree |
 
@@ -42,28 +42,47 @@
 
 不填这一步也能用：报名照样存进数据库，在后台能看到；只是邮箱收不到通知，报名者会被提示点“发送邮件”。
 
-## 第 3 步：上线网页（Vercel，约 10 分钟）
+## 第 3 步：上线网页（GitHub Pages，已完成）
 
-1. 在 github.com 注册，新建一个仓库（如 `penyacup`），点 **uploading an existing file**，把压缩包里的全部文件拖进去，点 **Commit**。
-2. 在 vercel.com 用 GitHub 账号登录，点 **Add New → Project**，选中这个仓库，直接点 **Deploy**。不需要改任何设置。
-3. 部署完成后会得到一个 `xxx.vercel.app` 网址，先打开检查：
-   - 首页能显示，三语能切换；
-   - 打开 `/admin.html`，用第 1 步的管理员账号能登录。
+- 仓库：https://github.com/fcbshanghai2007-leo/penyacup（公开仓库，只含网页文件和公开密钥）
+- 设置：仓库 **Settings → Pages**，Source 为 **Deploy from a branch**，分支 `main`，文件夹 `/ (root)`。
+- 仓库里的 `CNAME` 文件内容是 `penyacup.asia`，用来绑定域名，**不要删除**。
 
-以后要改网站，只需在 GitHub 上替换文件，Vercel 会在一分钟内自动更新。
+## 第 4 步：绑定 penyacup.asia（已完成）
 
-> 不想用 GitHub 的话，也可以用 Netlify Drop（app.netlify.com/drop），直接把装着这些文件的文件夹拖进网页即可上线，域名绑定方式类似。
+域名在阿里云购买，DNS 服务器保持阿里云默认的 `dns13.hichina.com` / `dns14.hichina.com`。
+在阿里云 **云解析 DNS → penyacup.asia → 解析设置** 中的记录：
 
-## 第 4 步：绑定 penyacup.asia
+| 主机记录 | 类型 | 记录值 |
+| --- | --- | --- |
+| @ | A | 185.199.108.153 |
+| @ | A | 185.199.109.153 |
+| @ | A | 185.199.110.153 |
+| @ | A | 185.199.111.153 |
+| www | CNAME | fcbshanghai2007-leo.github.io |
 
-1. Vercel 项目里点 **Settings** → **Domains**，添加 `penyacup.asia` 和 `www.penyacup.asia`。
-2. Vercel 会显示需要添加的 DNS 记录（通常是一条 A 记录和一条 CNAME 记录），**以 Vercel 页面上显示的值为准**。
-3. 登录你买域名的地方（域名注册商），进入 penyacup.asia 的 DNS 设置：
-   - 先删除或修改旧网站的 A / CNAME 记录；
-   - 按 Vercel 给的值添加新记录。
-4. 一般几分钟到几小时生效。Vercel 会自动配置 HTTPS 证书。
+- HTTPS 证书由 GitHub 自动签发和续期，**Enforce HTTPS** 已开启；http 和 www 都会自动跳到 https://penyacup.asia。
+- 如果证书长时间显示未签发：在 Settings → Pages 里把 Custom domain 清空保存，再重新填 `penyacup.asia` 保存，通常几分钟内就会签发。
 
-旧网站的内容会在 DNS 切换后被新网站替代。旧的托管服务可在确认新网站正常后再停用。
+## 以后怎么修改网站
+
+推荐做法：在 Claude Code 里说「修改 `~/penyacup` 里的网站：……」。修改后推送到 GitHub，约 1 分钟网站自动更新。
+
+自己用命令行更新：
+
+```bash
+cd ~/penyacup
+git pull
+# 修改文件后：
+git add -A
+git commit -m "说明改了什么"
+git push
+```
+
+注意：
+
+- 尽量不要在 GitHub 网页上和电脑上同时改文件；如果在网页上改过，先在电脑上 `git pull` 再改。
+- 修改了 `schema.sql` 的话，还需要到 Supabase → SQL Editor 里执行对应的改动，网页更新不会自动改数据库。
 
 ## 第 5 步：上线后检查清单
 
