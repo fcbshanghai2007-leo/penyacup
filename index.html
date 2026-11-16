@@ -119,10 +119,16 @@ details.admin summary{cursor:pointer;font-weight:700;min-height:44px;display:fle
 .admin-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));align-items:end;margin-top:12px}
 .mini{min-height:36px;padding:6px 12px;font-size:13px}
 
-footer{padding:40px 0 0;background:var(--ink)}
-footer .logo{display:block;width:84px;height:84px;border-radius:50%;background:#fff;object-fit:contain;padding:6px;margin-bottom:16px}
-footer .big{font-family:var(--display);font-size:clamp(64px,12vw,140px);line-height:.9}
-footer .hand{font-family:var(--hand);font-size:34px;transform:rotate(-3deg);display:inline-block;margin:8px 0 20px}
+footer{padding:56px 0 0;background:var(--ink)}
+footer .ft-id{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+footer .logo{flex:none;width:72px;height:72px;border-radius:50%;background:#fff;object-fit:contain;padding:5px}
+footer .ft-id .label{color:#fff;font-size:13px}
+footer .ft-id .cn{font-size:14px;color:var(--line);margin-top:4px;letter-spacing:.08em}
+footer .ft-meta{border-top:1px solid #2a2a2a;padding-top:20px;margin-top:4px}
+footer .ft-meta .label{color:#fff;margin-top:16px}
+footer .big{font-family:var(--display);font-size:clamp(56px,12vw,140px);line-height:.9}
+footer .big .nw{white-space:nowrap}
+footer .hand{font-family:var(--hand);font-size:34px;transform:rotate(-3deg);display:inline-block;margin:16px 0 28px}
 footer p{color:var(--line);font-size:13px;max-width:760px}
 @media (max-width:640px){
   .hero .blk,.hero .blk.r{display:none}
@@ -326,12 +332,19 @@ a.btn-or{display:inline-flex;align-items:center;text-decoration:none;min-height:
 
 <footer>
   <div class="wrap">
-    <img class="logo" src="logo-pbs.jpg" alt="Penya Blaugrana Shanghai 巴萨红蓝魂官方球迷会" width="84" height="84">
-    <div class="label">Penya Blaugrana Shanghai · 巴萨红蓝魂官方球迷会</div>
-    <div class="big">20 ANYS · 2007 — 2027</div>
+    <div class="ft-id">
+      <img class="logo" src="logo-pbs.jpg" alt="Penya Blaugrana Shanghai 巴萨红蓝魂官方球迷会" width="72" height="72">
+      <div>
+        <div class="label">Penya Blaugrana Shanghai</div>
+        <div class="cn">巴萨红蓝魂官方球迷会</div>
+      </div>
+    </div>
+    <div class="big">20 ANYS · <span class="nw">2007 — 2027</span></div>
     <div class="hand" data-i="ft_hand"></div>
-    <p data-i-html="ft_p"></p>
-    <p class="label" style="color:#fff;margin-top:20px">Visca el Barça · Força Barça</p>
+    <div class="ft-meta">
+      <p data-i-html="ft_p"></p>
+      <p class="label">Visca el Barça · Força Barça</p>
+    </div>
   </div>
   <div class="stripe" style="margin-top:24px"></div>
 </footer>
