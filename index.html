@@ -35,23 +35,11 @@ nav.top .cta{background:var(--or);color:#000;text-decoration:none;font-weight:70
 
 /* hero */
 header.hero{background:var(--or);color:#000;position:relative;overflow:hidden}
+.hero .blk{position:absolute;width:200px;height:120px}
+.hero .blk.b{right:120px;top:28px;background:var(--blau);transform:rotate(8deg)}
+.hero .blk.r{right:40px;top:80px;background:var(--grana);transform:rotate(-12deg)}
+@media (max-width:640px){.hero .blk{display:none}}
 .hero .wrap{position:relative;padding-top:40px;padding-bottom:40px}
-.hero .cat{position:absolute;right:16px;top:4px;width:clamp(300px,28vw,400px);pointer-events:none}
-.hero .cat svg{display:block;width:100%;height:auto;overflow:visible}
-.hero .cat .bob{animation:catbob 2.6s ease-in-out infinite}
-.hero .cat .tail{transform-box:fill-box;transform-origin:5% 85%;animation:cattail 1.6s ease-in-out infinite}
-.hero .cat .eye{transform-box:fill-box;transform-origin:center;animation:catblink 4.5s infinite}
-.hero .cat .head{transform-box:fill-box;transform-origin:50% 90%;animation:cathead 5s ease-in-out infinite}
-.hero .cat .ball{animation:catball 1.3s cubic-bezier(.5,0,.5,1) infinite}
-.hero .cat .sign{transform-box:fill-box;transform-origin:50% 0;animation:catsign 3.2s ease-in-out infinite}
-@keyframes catbob{50%{transform:translateY(-5px)}}
-@keyframes cattail{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(12deg)}}
-@keyframes catblink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
-@keyframes cathead{0%,40%,100%{transform:rotate(0)}50%,70%{transform:rotate(-6deg)}}
-@keyframes catball{0%,100%{transform:translateY(0)}50%{transform:translateY(-34px)}}
-@keyframes catsign{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
-@media (prefers-reduced-motion:reduce){.hero .cat *{animation:none!important}}
-@media (max-width:1000px){.hero .cat{display:none}}
 .hero h1{font-family:var(--display);font-weight:400;font-size:clamp(84px,15vw,190px);line-height:.86;margin:.3em 0 10px;position:relative}
 .hero .cnline{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-weight:900;font-size:clamp(22px,3vw,32px)}
 .hero .cnline .inv{background:#000;color:#fff;padding:0 12px}
@@ -202,33 +190,8 @@ a.btn-or{display:inline-flex;align-items:center;text-decoration:none;min-height:
 
 <header class="hero" id="top">
   <div class="wrap">
-    <div class="cat" aria-hidden="true">
-      <svg viewBox="0 0 300 240" width="300" height="240">
-        <ellipse cx="170" cy="226" rx="78" ry="8" fill="rgba(0,0,0,.18)"/>
-        <g class="sign"><rect x="6" y="14" width="118" height="46" fill="#A50044" stroke="#000" stroke-width="4" transform="rotate(-8 65 37)"/><text x="65" y="49" text-anchor="middle" transform="rotate(-8 65 37)" fill="#fff" font-family="Bebas Neue, Oswald, sans-serif" font-size="32" letter-spacing="1">20 ANYS</text></g>
-        <g class="ball"><circle cx="262" cy="206" r="17" fill="#fff" stroke="#000" stroke-width="4"/><path d="M262 197 l8 6 -3 9 h-10 l-3 -9 z" fill="#000"/></g>
-        <g class="bob">
-          <path class="tail" d="M208 196 C250 196 262 152 244 124 C238 114 225 118 230 129 C242 150 236 176 206 180 Z" fill="#FFF4E0" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
-          <clipPath id="jersey"><path d="M125 204 C120 164 135 138 170 138 C205 138 220 164 215 204 Z"/></clipPath>
-          <g clip-path="url(#jersey)"><rect x="118" y="130" width="104" height="80" fill="#004D98"/><rect x="134" y="130" width="18" height="80" fill="#A50044"/><rect x="170" y="130" width="18" height="80" fill="#A50044"/><rect x="206" y="130" width="18" height="80" fill="#A50044"/></g>
-          <path d="M125 204 C120 164 135 138 170 138 C205 138 220 164 215 204 Z" fill="none" stroke="#000" stroke-width="4"/>
-          <ellipse cx="150" cy="205" rx="15" ry="9" fill="#FFF4E0" stroke="#000" stroke-width="4"/>
-          <ellipse cx="190" cy="205" rx="15" ry="9" fill="#FFF4E0" stroke="#000" stroke-width="4"/>
-          <g class="head">
-            <path d="M118 80 L122 28 L158 58 Z M222 80 L218 28 L182 58 Z" fill="#FFF4E0" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
-            <path d="M126 66 L128 42 L146 58 Z M214 66 L212 42 L194 58 Z" fill="#FF9FB0"/>
-            <ellipse cx="170" cy="100" rx="60" ry="50" fill="#FFF4E0" stroke="#000" stroke-width="4"/>
-            <g class="eye"><ellipse cx="148" cy="98" rx="7" ry="10" fill="#000"/><circle cx="150" cy="94" r="2.5" fill="#fff"/></g>
-            <g class="eye"><ellipse cx="192" cy="98" rx="7" ry="10" fill="#000"/><circle cx="194" cy="94" r="2.5" fill="#fff"/></g>
-            <ellipse cx="134" cy="116" rx="10" ry="5" fill="#FF9FB0" opacity=".75"/>
-            <ellipse cx="206" cy="116" rx="10" ry="5" fill="#FF9FB0" opacity=".75"/>
-            <path d="M164 110 h12 l-6 6 z" fill="#F07A8C" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M161 122 Q165.5 128 170 122 Q174.5 128 179 122" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
-            <path d="M126 106 l-22 -4 M126 114 l-22 4 M214 106 l22 -4 M214 114 l22 4" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
-          </g>
-        </g>
-      </svg>
-    </div>
+    <div class="blk b" aria-hidden="true"></div>
+    <div class="blk r" aria-hidden="true"></div>
     <div class="label">The 1st Barça Asia Penya Cup · Shanghai 2027</div>
     <h1>MÉS QUE<br>UN GOL</h1>
     <div class="cnline"><span data-i="hero_t1"></span><span class="inv" data-i="hero_t2"></span></div>
