@@ -39,7 +39,7 @@ header.hero{background:var(--or);color:#000;position:relative;overflow:hidden}
 .hero .blk{position:absolute;width:200px;height:120px}
 .hero .blk.b{right:120px;top:28px;background:var(--blau);transform:rotate(8deg)}
 .hero .blk.r{right:40px;top:80px;background:var(--grana);transform:rotate(-12deg);color:#fff;font-family:var(--display);font-size:64px;display:flex;align-items:center;justify-content:center}
-.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(84px,15vw,190px);line-height:.86;margin:18px 0 10px;position:relative}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(84px,15vw,190px);line-height:.86;margin:.3em 0 10px;position:relative}
 .hero .cnline{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-weight:900;font-size:clamp(22px,3vw,32px)}
 .hero .cnline .inv{background:#000;color:#fff;padding:0 12px}
 .hero .hand{font-family:var(--hand);font-size:30px;transform:rotate(-3deg);display:inline-block;margin-top:14px}
@@ -120,11 +120,12 @@ details.admin summary{cursor:pointer;font-weight:700;min-height:44px;display:fle
 .mini{min-height:36px;padding:6px 12px;font-size:13px}
 
 footer{padding:40px 0 0;background:var(--ink)}
+footer .logo{display:block;width:84px;height:84px;border-radius:50%;background:#fff;object-fit:contain;padding:6px;margin-bottom:16px}
 footer .big{font-family:var(--display);font-size:clamp(64px,12vw,140px);line-height:.9}
 footer .hand{font-family:var(--hand);font-size:34px;transform:rotate(-3deg);display:inline-block;margin:8px 0 20px}
 footer p{color:var(--line);font-size:13px;max-width:760px}
 @media (max-width:640px){
-  .hero .blk{display:none}
+  .hero .blk,.hero .blk.r{display:none}
   .mean .n{width:68px;font-size:46px}
   .day .d{width:72px}
 }
@@ -149,7 +150,7 @@ a.btn-or{display:inline-flex;align-items:center;text-decoration:none;min-height:
 </style>
 <nav class="top" aria-label="Main">
   <div class="wrap">
-    <a class="brand" href="#top">ASIA PENYA CUP <b>2027</b></a>
+    <a class="brand" href="#top">BARÇA ASIA PENYA CUP <b>2027</b></a>
     <div class="links">
       <a href="#about" data-i="nav_about"></a>
       <a href="#programme" data-i="nav_prog"></a>
@@ -325,6 +326,7 @@ a.btn-or{display:inline-flex;align-items:center;text-decoration:none;min-height:
 
 <footer>
   <div class="wrap">
+    <img class="logo" src="logo-pbs.jpg" alt="Penya Blaugrana Shanghai 巴萨红蓝魂官方球迷会" width="84" height="84">
     <div class="label">Penya Blaugrana Shanghai · 巴萨红蓝魂官方球迷会</div>
     <div class="big">20 ANYS · 2007 — 2027</div>
     <div class="hand" data-i="ft_hand"></div>
