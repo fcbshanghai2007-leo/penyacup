@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>管理后台 · Barça Asia Penya Cup 2027</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;600&family=Noto+Sans+SC:wght@400;700;900&display=swap">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--blau:#004D98;--grana:#A50044;--or:#EDBB00;--ink:#111;--card:#1F1F1F;--raised:#262626;--line:#BDBDBD}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:#fff;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.6}
+.wrap{max-width:1000px;margin:0 auto;padding:24px 20px 60px}
+header{background:var(--or);color:#000}
+header .wrap{padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{margin:0;font-family:"Bebas Neue","Oswald","Arial Narrow",sans-serif;font-weight:400;font-size:34px;line-height:1}
+.stripe{height:8px;background:repeating-linear-gradient(90deg,var(--blau) 0 48px,var(--grana) 48px 96px)}
+.label{font-family:"Oswald","Arial Narrow",sans-serif;font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--line)}
+section{background:var(--card);border-radius:4px;padding:20px;margin-top:20px}
+h2{margin:0 0 12px;font-size:20px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));align-items:end}
+.field{display:flex;flex-direction:column;gap:6px}
+label{font-weight:700;font-size:14px}
+input,select,textarea{font:inherit;color:#fff;background:var(--raised);border:1px solid #4a4a4a;border-radius:2px;padding:10px 12px;min-height:44px}
+textarea{min-height:150px;resize:vertical;font-size:14px}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--or);outline-offset:2px}
+button{font:inherit;cursor:pointer;border:0;border-radius:0;min-height:44px;padding:10px 18px;font-weight:700}
+.btn-or{background:var(--or);color:#000}
+.btn-ghost{background:transparent;color:#fff;border:1px solid var(--line)}
+.mini{min-height:36px;padding:6px 12px;font-size:13px}
+.msg{min-height:22px;font-size:14px;color:var(--or)}
+.muted{color:var(--line)}
+.tbox{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid #333;vertical-align:middle;font-size:14px}
+th{background:var(--raised);font-family:"Oswald","Arial Narrow",sans-serif;font-size:12px;letter-spacing:.12em;color:var(--line)}
+.logo{width:48px;height:48px;object-fit:contain;background:#fff;border:2px solid #000}
+.score input{width:64px;min-height:36px;padding:4px 8px}
+a{color:var(--or)}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>ASIA PENYA CUP 2027 · 管理后台</h1><div id="who" class="label" style="color:#000"></div></div><div class="stripe"></div></header>
+<main class="wrap">
+
+<div id="setup" style="display:none"><section><h2>还没有完成配置</h2><p class="muted">请先在 config.js 中填写 SUPABASE_URL 和 SUPABASE_ANON_KEY（见 README.md）。</p></section></div>
+
+<div id="login" style="display:none">
+  <section style="max-width:420px">
+    <h2>管理员登录</h2>
+    <form id="login-form" class="field" style="gap:12px">
+      <div class="field"><label for="l-email">邮箱</label><input id="l-email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="l-pass">密码</label><input id="l-pass" type="password" autocomplete="current-password" required></div>
+      <button class="btn-or" type="submit">登录</button>
+      <div class="msg" id="login-msg" role="status"></div>
+    </form>
+  </section>
+</div>
+
+<div id="app" style="display:none">
+  <p><a href="./">← 查看网站</a> · <button type="button" class="btn-ghost mini" id="logout">退出登录</button></p>
+  <div class="msg" id="msg" role="status"></div>
+
+  <section>
+    <h2>比赛与比分 <span class="label">Matches · 实时同步到网站</span></h2>
+    <div class="grid">
+      <div class="field"><label for="m-no">场次</label><input id="m-no" type="number" min="1"></div>
+      <div class="field"><label for="m-time">时间</label><input id="m-time" placeholder="6.12 09:30"></div>
+      <div class="field"><label for="m-home">主队</label><input id="m-home" list="team-names"></div>
+      <div class="field"><label for="m-away">客队</label><input id="m-away" list="team-names"></div>
+      <button type="button" class="btn-or" id="m-add">添加比赛</button>
+    </div>
+    <datalist id="team-names"></datalist>
+    <div id="matches" style="margin-top:16px"></div>
+  </section>
+
+  <section>
+    <h2>进球公益规则 <span class="label">Goals for Good</span></h2>
+    <div class="grid">
+      <div class="field"><label for="a-pergoal">每球配捐</label><input id="a-pergoal" type="number" min="0" step="1"></div>
+      <div class="field"><label for="a-percs">每次零封配捐</label><input id="a-percs" type="number" min="0" step="1"></div>
+      <div class="field"><label for="a-extra">额外认捐</label><input id="a-extra" type="number" min="0" step="1"></div>
+      <div class="field"><label for="a-trophy">奖杯巡展净收益</label><input id="a-trophy" type="number" min="0" step="1"></div>
+      <div class="field"><label for="a-cur">货币</label><input id="a-cur" placeholder="CNY"></div>
+      <button type="button" class="btn-or" id="a-save-rules">保存规则</button>
+    </div>
+    <p class="muted" style="font-size:13px;margin:10px 0 0">留空表示“待定”，网站会显示“待定”而不显示金额。</p>
+  </section>
+
+  <section>
+    <h2>参赛队伍与嘉宾 <span class="label">Teams &amp; guests</span></h2>
+    <p class="muted" style="font-size:13px;margin-top:0">每行一个：名称 | 城市 | 状态 | 类型（参赛 / 嘉宾）| Instagram 账号 | 简介。留空并保存前，网站显示内置的默认名单。</p>
+    <div class="field"><label for="a-teams">名单</label><textarea id="a-teams"></textarea></div>
+    <p><button type="button" class="btn-or" id="a-save-teams">保存名单</button> <button type="button" class="btn-ghost" id="a-fill-default">填入网站默认名单</button></p>
+    <div class="label" style="margin-top:12px">Logo（保存名单后上传，自动缩小）</div>
+    <div id="logos" style="display:grid;gap:10px;margin-top:10px"></div>
+  </section>
+
+  <section>
+    <h2>报名记录 <span class="label">Registrations</span></h2>
+    <p><button type="button" class="btn-or" id="r-load">刷新</button> <button type="button" class="btn-ghost" id="r-copy">复制为表格（可粘贴到 Excel）</button></p>
+    <div id="regs"></div>
+  </section>
+</div>
+</main>
+
+<script>
+(function(){
+"use strict";
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
+function msg(t){$("msg").textContent=t;}
+var CFG=window.APC_CONFIG||{};
+if(!CFG.SUPABASE_URL||!CFG.SUPABASE_ANON_KEY||!window.supabase){$("setup").style.display="block";return;}
+var sb=window.supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_ANON_KEY);
+var config={},matches=[],regs=[];
+
+var DEFAULT_LINES=[
+ "Penya Blaugrana Shanghai | 上海 | 东道主 | 参赛 | penyablaugranashanghai | 巴萨红蓝魂官方球迷会，2007 年从上海出发，2027 年迎来 20 周年；官方 Penya 编号 2369。",
+ "Penya FC Barcelona Japan | 东京 | 邀请中 | 参赛 | penya_fcb_japan | 以东京为核心的日本巴萨球迷社群，队徽融合日本圆日与加泰罗尼亚条纹。",
+ "Penya Barcelonista de Seúl | 首尔 | 邀请中 | 参赛 | penya_fcb_korea | 首尔巴萨球迷会，以城市名义连接韩国本地 culers。",
+ "第 4 席 | 待定 | 待定 | 参赛",
+ "英国官方 Penya | 英国 | 意向中 | 嘉宾",
+ "西班牙官方 Penya | 西班牙 | 意向中 | 嘉宾",
+ "法国官方 Penya | 法国 | 意向中 | 嘉宾",
+ "美国官方 Penya | 美国 | 意向中 | 嘉宾",
+ "其他地区官方 Penya | 世界各地 | 欢迎加入 | 嘉宾"
+];
+
+function show(session){
+  $("login").style.display=session?"none":"block";
+  $("app").style.display=session?"block":"none";
+  $("who").textContent=session?session.user.email:"";
+  if(session){loadAll();}
+}
+sb.auth.getSession().then(function(r){show(r.data.session);});
+sb.auth.onAuthStateChange(function(_e,session){show(session);});
+$("login-form").addEventListener("submit",function(e){
+  e.preventDefault();$("login-msg").textContent="登录中…";
+  sb.auth.signInWithPassword({email:$("l-email").value.trim(),password:$("l-pass").value}).then(function(r){
+    $("login-msg").textContent=r.error?"登录失败："+r.error.message:"";
+  });
+});
+$("logout").addEventListener("click",function(){sb.auth.signOut();});
+
+function loadAll(){loadConfig();loadMatches();loadRegs();}
+
+/* ---------- config ---------- */
+function loadConfig(){
+  sb.from("config").select("data").eq("id",1).maybeSingle().then(function(r){
+    if(r.error){msg("读取配置失败："+r.error.message);return;}
+    config=(r.data&&r.data.data)||{};renderConfig();
+  });
+}
+function saveConfig(c,okText){
+  return sb.from("config").update({data:c,updated_at:new Date().toISOString()}).eq("id",1).then(function(r){
+    if(r.error){msg("保存失败："+r.error.message);return;}config=c;renderConfig();msg(okText);
+  });
+}
+function v(id){var s=$(id).value.trim();return s===""?null:Number(s);}
+function renderConfig(){
+  $("a-pergoal").value=config.perGoal!=null?config.perGoal:"";
+  $("a-percs").value=config.perCleanSheet!=null?config.perCleanSheet:"";
+  $("a-extra").value=config.extra!=null?config.extra:"";
+  $("a-trophy").value=config.trophyNet!=null?config.trophyNet:"";
+  $("a-cur").value=config.currency||"";
+  var tl=Array.isArray(config.teams)?config.teams:[];
+  $("a-teams").value=tl.map(function(x){return [x.name,x.city,x.status,x.kind==="guest"?"嘉宾":"参赛",x.ig||"",x.desc||""].join(" | ").replace(/( \| )+$/,"");}).join("\n");
+  $("team-names").innerHTML=tl.filter(function(x){return x.kind!=="guest";}).map(function(x){return '<option value="'+esc(x.name)+'">';}).join("");
+  $("logos").innerHTML=tl.length?tl.map(function(x,i){
+    return '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'+(x.logo?'<img class="logo" src="'+esc(x.logo)+'" alt="">':'<div class="logo" aria-hidden="true"></div>')+
+      '<label for="lg-'+i+'" style="min-width:220px">'+esc(x.name)+(x.kind==="guest"?"（嘉宾）":"")+'</label>'+
+      '<input id="lg-'+i+'" class="lg-in" data-idx="'+i+'" type="file" accept="image/*" style="min-height:auto">'+
+      (x.logo?'<button type="button" class="btn-ghost mini lg-rm" data-idx="'+i+'">移除</button>':'')+'</div>';
+  }).join(""):'<p class="muted">请先保存名单。</p>';
+}
+$("a-save-rules").addEventListener("click",function(){
+  var c=Object.assign({},config);c.perGoal=v("a-pergoal");c.perCleanSheet=v("a-percs");c.extra=v("a-extra");c.trophyNet=v("a-trophy");c.currency=$("a-cur").value.trim()||"CNY";
+  saveConfig(c,"规则已保存，网站已更新");
+});
+$("a-fill-default").addEventListener("click",function(){if(!$("a-teams").value.trim()||confirmReplace())$("a-teams").value=DEFAULT_LINES.join("\n");});
+function confirmReplace(){msg("已填入默认名单，确认无误后点“保存名单”。");return true;}
+$("a-save-teams").addEventListener("click",function(){
+  var old=Array.isArray(config.teams)?config.teams:[];
+  var teams=$("a-teams").value.split("\n").map(function(l){return l.trim();}).filter(Boolean).map(function(l){
+    var p=l.split("|").map(function(s){return s.trim();});
+    var t={name:p[0]||"",city:p[1]||"",status:p[2]||"",kind:/嘉宾|guest/i.test(p[3]||"")?"guest":"team",ig:(p[4]||"").replace(/^@/,""),desc:p.slice(5).join(" | ")};
+    old.forEach(function(o){if(o.name===t.name&&o.logo)t.logo=o.logo;});return t;
+  });
+  var c=Object.assign({},config);c.teams=teams;saveConfig(c,"名单已保存，网站已更新");
+});
+function saveLogo(idx,logo){
+  var tl=(config.teams||[]).map(function(x){return Object.assign({},x);});if(!tl[idx])return;
+  if(logo)tl[idx].logo=logo;else delete tl[idx].logo;
+  var c=Object.assign({},config);c.teams=tl;saveConfig(c,logo?"Logo 已保存":"Logo 已移除");
+}
+$("logos").addEventListener("change",function(e){
+  var inp=e.target;if(!inp.classList.contains("lg-in")||!inp.files||!inp.files[0])return;
+  var idx=Number(inp.getAttribute("data-idx")),url=URL.createObjectURL(inp.files[0]),img=new Image();
+  img.onload=function(){var S=200,cv=document.createElement("canvas");cv.width=S;cv.height=S;var g=cv.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,S,S);
+    var r=Math.min(S/img.width,S/img.height),w=img.width*r,h=img.height*r;g.drawImage(img,(S-w)/2,(S-h)/2,w,h);URL.revokeObjectURL(url);
+    var d=cv.toDataURL("image/webp",0.88);if(d.indexOf("data:image/webp")!==0)d=cv.toDataURL("image/jpeg",0.88);saveLogo(idx,d);};
+  img.onerror=function(){msg("无法读取该图片");};img.src=url;
+});
+$("logos").addEventListener("click",function(e){if(e.target.classList.contains("lg-rm"))saveLogo(Number(e.target.getAttribute("data-idx")),null);});
+
+/* ---------- matches ---------- */
+function loadMatches(){
+  sb.from("matches").select("*").order("no",{ascending:true}).then(function(r){
+    if(r.error){msg("读取比赛失败："+r.error.message);return;}matches=r.data||[];renderMatches();
+  });
+}
+function renderMatches(){
+  $("matches").innerHTML=matches.length?'<div class="tbox"><table><thead><tr><th>场次</th><th>时间</th><th>对阵</th><th>比分</th><th>状态</th><th></th></tr></thead><tbody>'+
+    matches.map(function(m){
+      return '<tr data-id="'+esc(m.id)+'"><td>'+esc(m.no)+'</td><td>'+esc(m.time)+'</td><td>'+esc(m.home)+' vs '+esc(m.away)+'</td>'+
+        '<td class="score"><input aria-label="'+esc(m.home)+' 进球" class="hs" type="number" min="0" value="'+(m.home_score||0)+'"> : <input aria-label="'+esc(m.away)+' 进球" class="as" type="number" min="0" value="'+(m.away_score||0)+'"></td>'+
+        '<td><select aria-label="状态" class="st" style="min-height:36px"><option value="scheduled"'+(m.status==="scheduled"?" selected":"")+'>未开始</option><option value="live"'+(m.status==="live"?" selected":"")+'>进行中</option><option value="done"'+(m.status==="done"?" selected":"")+'>完场</option></select></td>'+
+        '<td style="white-space:nowrap"><button type="button" class="btn-or mini sv">保存</button> <button type="button" class="btn-ghost mini dl">删除</button></td></tr>';
+    }).join("")+'</tbody></table></div>':'<p class="muted">尚未添加比赛。</p>';
+}
+$("m-add").addEventListener("click",function(){
+  var home=$("m-home").value.trim(),away=$("m-away").value.trim();
+  if(!home||!away){msg("请填写主队和客队");return;}
+  sb.from("matches").insert({no:Number($("m-no").value)||matches.length+1,time:$("m-time").value.trim(),home:home,away:away}).then(function(r){
+    if(r.error){msg("添加失败："+r.error.message);return;}
+    ["m-no","m-time","m-home","m-away"].forEach(function(id){$(id).value="";});msg("比赛已添加");loadMatches();
+  });
+});
+$("matches").addEventListener("click",function(e){
+  var tr=e.target.closest("tr");if(!tr)return;var id=tr.getAttribute("data-id");
+  if(e.target.classList.contains("sv")){
+    sb.from("matches").update({home_score:Number(tr.querySelector(".hs").value)||0,away_score:Number(tr.querySelector(".as").value)||0,status:tr.querySelector(".st").value,updated_at:new Date().toISOString()}).eq("id",id)
+      .then(function(r){msg(r.error?"保存失败："+r.error.message:"比分已保存，网站已更新");if(!r.error)loadMatches();});
+  }else if(e.target.classList.contains("dl")){
+    if(tr.getAttribute("data-confirm")!=="1"){tr.setAttribute("data-confirm","1");e.target.textContent="确认删除";return;}
+    sb.from("matches").delete().eq("id",id).then(function(r){msg(r.error?"删除失败："+r.error.message:"已删除");loadMatches();});
+  }
+});
+
+/* ---------- registrations ---------- */
+var COLS=[["created_at","提交时间"],["type","类型"],["region","地区"],["penya","Penya"],["city","国家/城市"],["contact","联系人"],["email","邮箱"],["phone","电话/通讯"],["players","球员"],["guests","随行"],["days","日程"],["gift","爱心礼物"],["notes","备注"],["lang","语言"]];
+function fmt(k,val){if(k==="created_at")return String(val||"").slice(0,16).replace("T"," ");if(k==="type")return val==="guest"?"嘉宾":"参赛";return val==null?"":String(val);}
+function loadRegs(){
+  sb.from("registrations").select("*").order("created_at",{ascending:false}).then(function(r){
+    if(r.error){$("regs").textContent="读取失败："+r.error.message;return;}
+    regs=r.data||[];
+    $("regs").innerHTML=regs.length?'<p class="muted">共 '+regs.length+' 条</p><div class="tbox"><table><thead><tr>'+COLS.slice(0,10).map(function(c){return '<th>'+c[1]+'</th>';}).join("")+'</tr></thead><tbody>'+
+      regs.map(function(x){return '<tr>'+COLS.slice(0,10).map(function(c){return '<td>'+esc(fmt(c[0],x[c[0]]))+'</td>';}).join("")+'</tr>';}).join("")+'</tbody></table></div>':'<p class="muted">暂无报名。</p>';
+  });
+}
+$("r-load").addEventListener("click",loadRegs);
+$("r-copy").addEventListener("click",function(){
+  var tsv=[COLS.map(function(c){return c[1];}).join("\t")].concat(regs.map(function(x){return COLS.map(function(c){return fmt(c[0],x[c[0]]).replace(/[\t\n]/g," ");}).join("\t");})).join("\n");
+  try{navigator.clipboard.writeText(tsv).then(function(){msg("已复制 "+regs.length+" 条，可直接粘贴到 Excel");},function(){msg("复制失败，请换用电脑浏览器");});}catch(e){msg("复制失败");}
+});
+})();
+</script>
+</body>
+</html>
