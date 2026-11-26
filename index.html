@@ -14,6 +14,9 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+/* 锚点跳转时让出吸顶导航的高度（桌面单排约 57px，640px 以下两排约 105px） */
+[id]{scroll-margin-top:64px}
+@media(max-width:640px){[id]{scroll-margin-top:112px}}
 body{margin:0;background:var(--ink);color:#fff;font-family:var(--cn);font-size:15px;line-height:1.65}
 a{color:var(--or)}
 .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
@@ -112,6 +115,11 @@ button{font:inherit;cursor:pointer;border:0;border-radius:0;min-height:44px;padd
 .btn-ghost{background:transparent;color:#fff;border:1px solid var(--line)}
 .btn-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .status-msg{font-size:14px}
+.status-msg.is-ok,.status-msg.is-warn,.status-msg.is-err{display:block;flex-basis:100%;padding:8px 12px;border-left:4px solid var(--or);font-weight:700}
+.status-msg.is-err{border-left-color:var(--grana)}
+/* 报名按钮横排，结果提示换行占满整行 */
+.field.btn-row{flex-direction:row}
+.notice.is-off{border-style:solid;border-color:var(--grana);font-weight:700}
 pre.copy{white-space:pre-wrap;background:var(--raised);padding:14px;border-radius:2px;font-size:13px;margin:0}
 
 /* admin */
@@ -343,8 +351,8 @@ a.btn-or{display:inline-flex;align-items:center;text-decoration:none;min-height:
       <div class="field"><label for="f-contact"><span data-i="l_contact"></span> <span class="req">*</span></label><input id="f-contact" name="contact" required autocomplete="name"></div>
       <div class="field"><label for="f-email"><span data-i="l_email"></span> <span class="req">*</span></label><input id="f-email" name="email" type="email" required autocomplete="email"></div>
       <div class="field"><label for="f-phone" data-i="l_phone"></label><input id="f-phone" name="phone" autocomplete="tel"></div>
-      <div class="field"><label for="f-players" data-i="l_players"></label><input id="f-players" name="players" type="number" min="0" max="40" inputmode="numeric"></div>
-      <div class="field"><label for="f-guests" data-i="l_guests"></label><input id="f-guests" name="guests" type="number" min="0" max="200" inputmode="numeric"></div>
+      <div class="field"><label for="f-players" data-i="l_players"></label><input id="f-players" name="players" type="number" min="0" step="1" inputmode="numeric"></div>
+      <div class="field"><label for="f-guests" data-i="l_guests"></label><input id="f-guests" name="guests" type="number" min="0" step="1" inputmode="numeric"></div>
       <div class="field"><label for="f-days" data-i="l_days"></label>
         <select id="f-days" name="days"><option value="all" data-i="o_all"></option><option value="matchday" data-i="o_match"></option><option value="tbd" data-i="o_tbd"></option></select></div>
       <div class="field full"><label for="f-gift" data-i="l_gift"></label><textarea id="f-gift" name="gift" data-ip="ph_gift"></textarea></div>
@@ -360,6 +368,7 @@ a.btn-or{display:inline-flex;align-items:center;text-decoration:none;min-height:
       <h3 style="margin:0 0 6px" data-i="mb_h"></h3>
       <p style="margin:0" class="muted" data-i-html="mb_p"></p>
       <div class="btn-row"><a class="btn-or" id="mail-link" href="#register" data-i="b_mail"></a><button type="button" class="btn-ghost" id="mail-copy" data-i="b_copy"></button></div>
+      <span class="status-msg" id="copy-status" role="status" style="display:block;margin-top:8px"></span>
       <pre class="copy" id="reg-copy-text" style="margin-top:12px"></pre>
     </div>
 
@@ -426,12 +435,12 @@ zh:{nav_info:"杯赛",in_title:"杯赛信息",in_nm_k:"赛事名称",in_nm_v:"�
  r3_h:"红蓝公益足球日",r3_p:"与上海本地孩子一起踢球，围绕努力、尊重、谦逊、团队、雄心。",r3_s:"合作学校待定",
  r4_h:"爱心球交接",r4_p:"各 Penya 的心意汇成“爱心球”，传给下一站主办城市。",r4_s:"确定",
  r_disc:"在获得书面确认之前，本活动不代表 FC Barcelona 或 FC Barcelona Foundation 官方立场。",
- reg_title:"Penya 报名",reg_sub:'报名截止 <span class="tbd">待公布</span>',reg_intro:"本表供官方 Penya 登记参赛或以嘉宾身份参加的意向。报名信息将发送至官方邮箱 "+MAIL+"，我们会尽快与您联系确认。",
+ reg_title:"Penya 报名",reg_sub:'报名截止 <span class="tbd">待公布</span>',reg_intro:"本表供官方 Penya 登记参赛或以嘉宾身份参加的意向。提交后本页会显示实际结果；如提示需要手动发送，请把报名信息发送至官方邮箱 "+MAIL+"。我们会尽快与您联系确认。",
  l_penya:"Penya 名称",l_city:"国家 / 城市",l_contact:"联系人",l_email:"邮箱",l_phone:"电话 / 微信 / WhatsApp",l_players:"参赛球员人数",l_guests:"随行球迷人数",l_days:"参加日程",
  o_all:"全部三天",o_match:"仅 6.12 比赛日",o_tbd:"待定",l_gift:"爱心礼物 / 想法",ph_gift:"例如：本地小礼物、签名足球、公益想法",l_notes:"备注",
  l_consent:"我同意主办方使用以上信息联系本 Penya，仅用于本次活动。",b_submit:"提交报名",b_copy:"复制报名信息",b_mail:"发送邮件",
  e_req:"请填写带 * 的必填项。",e_email:"邮箱格式不正确。",e_consent:"请勾选同意条款。",
- st_sending:"提交中…",st_ok:"报名已提交并发送至官方邮箱，我们会尽快联系您。",st_saved:"报名已登记。请点击下方“发送邮件”，把报名信息发送到官方邮箱完成报名。",st_mail:"请点击下方“发送邮件”，把报名信息发送到官方邮箱完成报名。",st_copied:"已复制。",st_copyfail:"请手动复制下方文字。",
+ st_sending:"提交中…",st_ok:"报名已登记，并已发送至官方邮箱。我们会尽快联系您。",st_sent:"报名已发送至官方邮箱，我们会尽快联系您。",st_fail:"登记未成功，报名信息尚未送达。请点击下方“发送邮件”或复制下方内容发送至官方邮箱，也可以稍后再次点击“提交报名”重试。",e_num:"人数请填写 0 或正整数。",live_last:"最后更新",st_saved:"报名已登记，但官方邮箱尚未收到通知。请点击下方“发送邮件”，或复制下方内容发送至官方邮箱。",st_mail:"请点击下方“发送邮件”，把报名信息发送到官方邮箱完成报名。",st_copied:"已复制。",st_copyfail:"浏览器未允许自动复制。已选中下方文字，请手动复制。",
  mb_h:"最后一步：发送到官方邮箱",mb_p:"点击“发送邮件”会打开您的邮箱并填好内容，收件人为 "+MAIL+"。如果没有打开邮箱，请复制下方信息，手动发送到该地址。",
  mail_subj:"Barça Asia Penya Cup 2027 报名",
  ft_hand:"二十年，红蓝魂",ft_intro:"巴萨红蓝魂（Penya Blaugrana Shanghai）于 2007 年在上海成立，2024 年获巴塞罗那足球俱乐部正式认证，官方 Penya 编号为 2369。二十年来，我们把上海的巴萨球迷聚在一起，也三次以 Penya 的名义支持巴萨基金会。2027 年，我们以第一届巴萨亚洲 Penya 杯庆祝球迷会在上海成立 20 周年。",ft_p:"Barça Asia Penya Cup 是官方 Penya 之间的交流活动，第一届由 Penya Blaugrana Shanghai 发起。本活动不是 FC Barcelona 官方赛事；所有公益收益全额捐赠巴萨基金会。官方邮箱："+MAIL+"。"
@@ -462,12 +471,12 @@ en:{nav_info:"Info",in_title:"Tournament information",in_nm_k:"Name",in_nm_v:"Th
  r3_h:"Community football day",r3_p:"Playing with local children around effort, respect, humility, teamwork and ambition.",r3_s:"Partner school TBC",
  r4_h:"Heart ball handover",r4_p:"Every Penya’s gift becomes the “heart ball”, passed to the next host city.",r4_s:"Confirmed",
  r_disc:"Until written confirmation is received, this event does not represent FC Barcelona or the FC Barcelona Foundation.",
- reg_title:"Penya registration",reg_sub:'Deadline <span class="tbd">TBA</span>',reg_intro:"For official Penyes to register as a tournament team or a guest delegation. Your registration is sent to our official email "+MAIL+" and we will get back to you soon.",
+ reg_title:"Penya registration",reg_sub:'Deadline <span class="tbd">TBA</span>',reg_intro:"For official Penyes to register as a tournament team or a guest delegation. After you submit, this page shows what actually happened; if it asks you to send the email yourself, please send your registration to our official email "+MAIL+". We will get back to you soon.",
  l_penya:"Penya name",l_city:"Country / City",l_contact:"Contact person",l_email:"Email",l_phone:"Phone / WeChat / WhatsApp",l_players:"Number of players",l_guests:"Supporters travelling",l_days:"Days attending",
  o_all:"All three days",o_match:"Matchday 12 June only",o_tbd:"Not sure yet",l_gift:"Relay of Hearts gift or idea",ph_gift:"e.g. a local gift, a signed ball, a charity idea",l_notes:"Notes",
  l_consent:"I agree that the organisers may use this information to contact our Penya for this event only.",b_submit:"Submit",b_copy:"Copy details",b_mail:"Send email",
  e_req:"Please fill in all fields marked *.",e_email:"Please check the email address.",e_consent:"Please tick the consent box.",
- st_sending:"Sending…",st_ok:"Registration sent to our official email. We will be in touch soon.",st_saved:"Registration recorded. Please click “Send email” below to send it to our official email.",st_mail:"Please click “Send email” below to send your registration to our official email.",st_copied:"Copied.",st_copyfail:"Please copy the text below manually.",
+ st_sending:"Sending…",st_ok:"Registration recorded and sent to our official email. We will be in touch soon.",st_sent:"Registration sent to our official email. We will be in touch soon.",st_fail:"Registration did not go through and has not reached us yet. Please click “Send email” below, or copy the text below and send it to our official email. You can also click “Submit” again later.",e_num:"Please enter 0 or a whole number.",live_last:"Last updated",st_saved:"Registration recorded, but our official email has not been notified yet. Please click “Send email” below, or copy the text below and send it to our official email.",st_mail:"Please click “Send email” below to send your registration to our official email.",st_copied:"Copied.",st_copyfail:"Your browser blocked automatic copying. The text below is selected; please copy it manually.",
  mb_h:"Last step: send to our official email",mb_p:"“Send email” opens your email app with everything filled in, addressed to "+MAIL+". If nothing opens, copy the details below and send them to that address.",
  mail_subj:"Barça Asia Penya Cup 2027 Registration",
  ft_hand:"20 years of Blaugrana spirit",ft_intro:"Our Barça supporters’ group was founded in Shanghai in 2007. In 2024, FC Barcelona officially recognised us as Penya Blaugrana Shanghai (Penya no. 2369). Over the years, we have brought Barça fans in Shanghai together and supported the Barça Foundation three times in the Penya’s name. In 2027, the first Barça Asia Penya Cup marks 20 years since the founding of our Barça supporters’ group in Shanghai.",ft_p:"The Barça Asia Penya Cup is an exchange among official Penyes; the first edition is organised by Penya Blaugrana Shanghai. It is not an official FC Barcelona competition. All charity proceeds go in full to the Barça Foundation. Official email: "+MAIL+"."
@@ -660,11 +669,15 @@ es:{
   "e_email": "Revisa la dirección de correo electrónico.",
   "e_consent": "Marca la casilla de consentimiento.",
   "st_sending": "Enviando…",
-  "st_ok": "Inscripción enviada al correo oficial. Nos pondremos en contacto contigo.",
-  "st_saved": "Inscripción registrada. Pulsa «Enviar correo» para enviarla a nuestra dirección oficial.",
+  "st_ok": "Inscripción registrada y enviada al correo oficial. Nos pondremos en contacto contigo.",
+  "st_sent": "Inscripción enviada al correo oficial. Nos pondremos en contacto contigo.",
+  "st_fail": "No se ha podido registrar la inscripción y todavía no nos ha llegado. Pulsa «Enviar correo» o copia el texto de abajo y envíalo a nuestra dirección oficial. También puedes volver a pulsar «Enviar inscripción» más tarde.",
+  "e_num": "Indica 0 o un número entero.",
+  "live_last": "Última actualización",
+  "st_saved": "Inscripción registrada, pero todavía no se ha avisado al correo oficial. Pulsa «Enviar correo» o copia el texto de abajo y envíalo a nuestra dirección oficial.",
   "st_mail": "Pulsa «Enviar correo» para enviar la inscripción a nuestra dirección oficial.",
   "st_copied": "Datos copiados.",
-  "st_copyfail": "Copia manualmente el texto de abajo.",
+  "st_copyfail": "El navegador no ha permitido la copia automática. El texto de abajo está seleccionado; cópialo manualmente.",
   "mb_h": "Último paso: enviar al correo oficial",
   "mb_p": "«Enviar correo» abrirá tu aplicación de correo con los datos ya preparados para fcbshanghai2007@gmail.com. Si no se abre, copia los datos y envíalos a esa dirección.",
   "mail_subj": "Inscripción · Barça Asia Penya Cup 2027",
@@ -860,11 +873,15 @@ fr:{
   "e_email": "Veuillez vérifier l’adresse e-mail.",
   "e_consent": "Veuillez cocher la case de consentement.",
   "st_sending": "Envoi en cours…",
-  "st_ok": "Votre inscription a été envoyée à notre adresse officielle. Nous vous recontacterons.",
-  "st_saved": "Inscription enregistrée. Cliquez sur « Envoyer un e-mail » pour la transmettre à notre adresse officielle.",
+  "st_ok": "Inscription enregistrée et envoyée à notre adresse officielle. Nous vous recontacterons.",
+  "st_sent": "Votre inscription a été envoyée à notre adresse officielle. Nous vous recontacterons.",
+  "st_fail": "L’inscription n’a pas pu être enregistrée et ne nous est pas encore parvenue. Cliquez sur « Envoyer un e-mail » ou copiez le texte ci-dessous et envoyez-le à notre adresse officielle. Vous pouvez aussi cliquer de nouveau sur « Envoyer l’inscription » plus tard.",
+  "e_num": "Indiquez 0 ou un nombre entier.",
+  "live_last": "Dernière mise à jour",
+  "st_saved": "Inscription enregistrée, mais notre adresse officielle n’a pas encore été prévenue. Cliquez sur « Envoyer un e-mail » ou copiez le texte ci-dessous et envoyez-le à notre adresse officielle.",
   "st_mail": "Cliquez sur « Envoyer un e-mail » pour transmettre l’inscription à notre adresse officielle.",
   "st_copied": "Informations copiées.",
-  "st_copyfail": "Veuillez copier manuellement le texte ci-dessous.",
+  "st_copyfail": "Votre navigateur a bloqué la copie automatique. Le texte ci-dessous est sélectionné ; copiez-le manuellement.",
   "mb_h": "Dernière étape : envoi à notre adresse officielle",
   "mb_p": "Le bouton « Envoyer un e-mail » ouvre votre messagerie avec un message prérempli pour fcbshanghai2007@gmail.com. Si elle ne s’ouvre pas, copiez les informations et envoyez-les à cette adresse.",
   "mail_subj": "Inscription · Barça Asia Penya Cup 2027",
@@ -898,12 +915,12 @@ ko:{nav_info:"대회 정보",in_title:"대회 정보",in_nm_k:"대회명",in_nm_
  r3_h:"나눔 축구의 날",r3_p:"상하이 아이들과 함께 노력, 존중, 겸손, 팀워크, 열정을 주제로 축구를 합니다.",r3_s:"협력 학교 미정",
  r4_h:"사랑의 공 전달",r4_p:"각 페냐의 마음을 모은 ‘사랑의 공’을 다음 개최 도시에 전달합니다.",r4_s:"확정",
  r_disc:"서면 확인을 받기 전까지 이 행사는 FC Barcelona 또는 FC Barcelona Foundation의 공식 입장을 대표하지 않습니다.",
- reg_title:"페냐 참가 신청",reg_sub:'마감일 <span class="tbd">추후 공지</span>',reg_intro:"공식 페냐의 대회 참가 또는 게스트 대표단 참가 의향을 접수합니다. 신청 내용은 공식 이메일 "+MAIL+"로 전송되며, 빠른 시일 내에 연락드리겠습니다.",
+ reg_title:"페냐 참가 신청",reg_sub:'마감일 <span class="tbd">추후 공지</span>',reg_intro:"공식 페냐의 대회 참가 또는 게스트 대표단 참가 의향을 접수합니다. 제출 후 이 페이지에 실제 처리 결과가 표시됩니다. 직접 보내라는 안내가 나오면 신청 내용을 공식 이메일 "+MAIL+"로 보내 주세요. 빠른 시일 내에 연락드리겠습니다.",
  l_penya:"페냐 이름",l_city:"국가 / 도시",l_contact:"담당자",l_email:"이메일",l_phone:"전화 / 위챗 / WhatsApp",l_players:"참가 선수 수",l_guests:"동행 팬 수",l_days:"참가 일정",
  o_all:"3일 전체",o_match:"6월 12일 경기일만",o_tbd:"미정",l_gift:"사랑 나눔 선물 / 아이디어",ph_gift:"예: 지역 기념품, 사인 축구공, 나눔 아이디어",l_notes:"비고",
  l_consent:"주최 측이 이 행사에 한해 위 정보를 이용해 저희 페냐에 연락하는 데 동의합니다.",b_submit:"신청하기",b_copy:"신청 내용 복사",b_mail:"이메일 보내기",
  e_req:"* 표시 항목을 모두 입력해 주세요.",e_email:"이메일 주소를 확인해 주세요.",e_consent:"동의 항목에 체크해 주세요.",
- st_sending:"전송 중…",st_ok:"신청서가 공식 이메일로 전송되었습니다. 곧 연락드리겠습니다.",st_saved:"신청이 등록되었습니다. 아래 ‘이메일 보내기’를 눌러 공식 이메일로 보내 주세요.",st_mail:"아래 ‘이메일 보내기’를 눌러 신청 내용을 공식 이메일로 보내 주세요.",st_copied:"복사되었습니다.",st_copyfail:"아래 내용을 직접 복사해 주세요.",
+ st_sending:"전송 중…",st_ok:"신청이 등록되었고 공식 이메일로 전송되었습니다. 곧 연락드리겠습니다.",st_sent:"신청서가 공식 이메일로 전송되었습니다. 곧 연락드리겠습니다.",st_fail:"신청이 등록되지 않았고 아직 전달되지 않았습니다. 아래 ‘이메일 보내기’를 누르거나 아래 내용을 복사해 공식 이메일로 보내 주세요. 잠시 후 ‘신청하기’를 다시 눌러도 됩니다.",e_num:"인원은 0 또는 양의 정수로 입력해 주세요.",live_last:"마지막 업데이트",st_saved:"신청이 등록되었지만 공식 이메일로는 아직 알림이 가지 않았습니다. 아래 ‘이메일 보내기’를 누르거나 아래 내용을 복사해 공식 이메일로 보내 주세요.",st_mail:"아래 ‘이메일 보내기’를 눌러 신청 내용을 공식 이메일로 보내 주세요.",st_copied:"복사되었습니다.",st_copyfail:"브라우저가 자동 복사를 허용하지 않았습니다. 아래 내용이 선택되어 있으니 직접 복사해 주세요.",
  mb_h:"마지막 단계: 공식 이메일로 보내기",mb_p:"‘이메일 보내기’를 누르면 내용이 채워진 이메일 앱이 열리며, 받는 사람은 "+MAIL+"입니다. 앱이 열리지 않으면 아래 내용을 복사해 이 주소로 보내 주세요.",
  mail_subj:"Barça Asia Penya Cup 2027 참가 신청",
  ft_hand:"20년, 블라우그라나의 혼",ft_intro:"우리 바르사 서포터즈 모임은 2007년 상하이에서 시작됐습니다. 2024년 FC 바르셀로나의 공식 페냐로 인정받았으며, 공식 명칭은 Penya Blaugrana Shanghai, 페냐 번호는 2369입니다. 그동안 상하이의 바르사 팬들을 하나로 모았고, 페냐의 이름으로 바르사 재단을 세 차례 지원했습니다. 2027년에는 제1회 바르사 아시아 페냐컵을 열어 상하이 서포터즈 모임의 창립 20주년을 기념합니다.",ft_p:"Barça Asia Penya Cup은 공식 페냐 간의 교류 행사로, 제1회는 Penya Blaugrana Shanghai가 주최합니다. FC Barcelona 공식 대회가 아니며, 모든 나눔 수익은 바르사 재단에 전액 기부됩니다. 공식 이메일: "+MAIL+"."
@@ -914,7 +931,8 @@ var lang="zh";
 try{var saved=localStorage.getItem("apc-lang");if(saved&&T[saved])lang=saved;else{var nl=(navigator.language||"").toLowerCase();var base=nl.split("-")[0];lang=Object.hasOwn(T,base)?base:"en";}}catch(e){}
 function t(k){return (T[lang]&&T[lang][k])!=null?T[lang][k]:(T.zh[k]||k);}
 
-var state={config:null,matches:[],db:null,canEdit:false,uid:null,liveLoaded:false,liveMsg:"live_wait"};
+var state={config:null,matches:[],db:null,canEdit:false,uid:null,liveLoaded:false,liveMsg:"live_wait",
+  fail:{matches:false,config:false},lastSync:null,reg:null,copy:null,savedSig:null,sentSig:null,sbMissing:false};
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
 function $(id){return document.getElementById(id);}
 function num(v){if(v===null||v===undefined||v==="")return null;var n=Number(v);return isFinite(n)?n:null;}
@@ -928,6 +946,7 @@ function applyLang(){
   document.querySelectorAll("[data-caption-original]").forEach(function(el){el.textContent=el.getAttribute("data-caption-"+lang)||el.getAttribute("data-caption-original");});
   tick(); renderAll(); if(typeof renderPenyaPick==="function")renderPenyaPick();
   if($("mailbox").style.display==="block") buildMail(formData());
+  renderRegStatus();
 }
 document.querySelectorAll(".lang button").forEach(function(b){b.addEventListener("click",function(){lang=b.getAttribute("data-lang");try{localStorage.setItem("apc-lang",lang);}catch(e){}applyLang();});});
 
@@ -948,8 +967,22 @@ function teamCard(x,i,guest){
     '<div style="min-width:0"><h3 style="margin:0;display:flex;align-items:flex-start;gap:8px">'+esc(x.name)+(x.ig&&/^[A-Za-z0-9._]{1,30}$/.test(x.ig)?'<a class="ig" href="https://www.instagram.com/'+esc(x.ig)+'/" aria-label="Instagram @'+esc(x.ig)+'" title="@'+esc(x.ig)+'"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>':'')+'</h3><div class="muted">'+esc(x.city)+'</div>'+(x.desc?'<p style="margin:6px 0 0;font-size:14px;line-height:1.55">'+esc(x.desc)+'</p>':'')+
     '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px"><span class="tag" style="color:#000;border-color:#4A4A4A">'+esc(x.status)+'</span>'+'</div></div></div>';
 }
+var STATUS_CONFIRMED={en:"Confirmed",ko:"참가 확정",es:"Confirmada",fr:"Confirmée"};
+/* 后台名单以中文保存；与网站默认名单一致的名称、城市、简介和状态词按访客语言显示，自定义内容原样显示。 */
+function localizeTeam(x){
+  if(lang==="zh"||!DEFAULT_TEAMS[lang])return x;
+  var zh=DEFAULT_TEAMS.zh,loc=DEFAULT_TEAMS[lang],o=Object.assign({},x),i;
+  for(i=0;i<zh.length;i++){if(zh[i].name===x.name){
+    o.name=loc[i].name;
+    if(x.city===zh[i].city)o.city=loc[i].city;
+    if((x.desc||"")===(zh[i].desc||""))o.desc=loc[i].desc;
+    break;}}
+  for(i=0;i<zh.length;i++){if(zh[i].status===x.status){o.status=loc[i].status;break;}}
+  if(x.status==="已确认"&&STATUS_CONFIRMED[lang])o.status=STATUS_CONFIRMED[lang];
+  return o;
+}
 function allTeams(){
-  if(state.config&&Array.isArray(state.config.teams)&&state.config.teams.length)return state.config.teams;
+  if(state.config&&Array.isArray(state.config.teams)&&state.config.teams.length)return state.config.teams.map(localizeTeam);
   return DEFAULT_TEAMS[lang].map(function(x){var o=Object.assign({},x);if(o.logoKey)o.logo=LOGOS[o.logoKey];return o;});
 }
 function renderTeams(){
@@ -990,9 +1023,15 @@ function renderCharity(){
   $("c-cs-note").innerHTML=t("g_per_cs")+" "+(pc!=null?esc(cur)+" "+pc:'<span class="tbd">'+t("tbd")+'</span>');
   if(pg!=null||pc!=null||trv!=null){var amt=goals*(pg||0)+cs*(pc||0)+ex+tr;$("c-amount").textContent=amt.toLocaleString();$("c-amount-note").textContent=cur+(ex?" · "+t("g_extra")+" "+ex.toLocaleString():"");}
   else{$("c-amount").textContent="—";$("c-amount-note").textContent=t("g_amount_tbd");}
-  if(state.liveLoaded)state.liveMsg=live?"live_on":(state.matches.length?"live_sync":"live_wait");
-  $("live-status").textContent=t(state.liveMsg);
+  /* 断线时保留最后一次比分，提示可能过期；恢复后由下一次成功加载改回正常状态。 */
+  var off=state.fail.matches||state.fail.config;
+  if(off)state.liveMsg="live_off";
+  else if(state.liveLoaded)state.liveMsg=live?"live_on":(state.matches.length?"live_sync":"live_wait");
+  var ls=$("live-status");
+  ls.textContent=t(state.liveMsg)+(off&&state.lastSync?" · "+t("live_last")+" "+fmtTime(state.lastSync):"");
+  ls.classList.toggle("is-off",off);
 }
+function fmtTime(d){try{return d.toLocaleTimeString(lang==="zh"?"zh-CN":lang,{hour:"2-digit",minute:"2-digit"});}catch(e){return d.toTimeString().slice(0,5);}}
 function renderAll(){renderTeams();renderFixtures();renderCharity();if(state.canEdit)renderAdmin();}
 
 /* ===== registration ===== */
@@ -1023,14 +1062,11 @@ document.querySelectorAll("#nav-links a").forEach(function(a){a.addEventListener
 var FIELDS=["type","region","penya","city","contact","email","phone","players","guests","days","gift","notes"];
 function formData(){var f=$("reg-form"),o={};FIELDS.forEach(function(k){o[k]=(f.elements[k].value||"").trim();});
   o.daysLabel=f.elements.days.options[f.elements.days.selectedIndex].textContent;o.typeLabel=f.elements.type.options[f.elements.type.selectedIndex].textContent;o.regionLabel=f.elements.region.options[f.elements.region.selectedIndex].textContent;o.consent=f.elements.consent.checked;return o;}
+/* 邮件正文统一用英文字段名，主办方按已公布的联系语言处理；选项文字保留访客语言并附代码。 */
 function mailBody(o){
-  if(lang==="es" || lang==="fr"){
-    var lines=[["l_type",o.typeLabel],["l_region",o.regionLabel],["l_penya",o.penya],["l_city",o.city],["l_contact",o.contact],["l_email",o.email],["l_phone",o.phone],["l_players",o.players],["l_guests",o.guests],["l_days",o.daysLabel],["l_gift",o.gift],["l_notes",o.notes]];
-    return t("mail_subj")+"\n\n"+lines.map(function(pair){return t(pair[0])+": "+pair[1];}).join("\n")+"\n"+t("l_consent");
-  }
   return "Barça Asia Penya Cup 2027 · Registration\n\n"+
    "Type: "+o.typeLabel+" ("+o.type+")\nRegion: "+o.regionLabel+"\nPenya: "+o.penya+"\nCountry / City: "+o.city+"\nContact: "+o.contact+"\nEmail: "+o.email+"\nPhone / Messenger: "+o.phone+
-   "\nPlayers: "+o.players+"\nSupporters: "+o.guests+"\nDays: "+o.daysLabel+"\nRelay of Hearts: "+o.gift+"\nNotes: "+o.notes+
+   "\nPlayers: "+o.players+"\nSupporters: "+o.guests+"\nDays: "+o.daysLabel+" ("+o.days+")\nRelay of Hearts: "+o.gift+"\nNotes: "+o.notes+
    "\nLanguage: "+lang+"\nConsent: yes";
 }
 function buildMail(o){
@@ -1039,31 +1075,60 @@ function buildMail(o){
   $("mail-link").setAttribute("href","mailto:"+OFFICIAL_EMAIL+"?subject="+encodeURIComponent(t("mail_subj")+" · "+o.penya)+"&body="+encodeURIComponent(body));
   $("mailbox").style.display="block";
 }
-function validate(o){if(!o.penya||!o.city||!o.contact||!o.email)return t("e_req");if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(o.email))return t("e_email");if(!o.consent)return t("e_consent");return "";}
-function copyNow(){var txt=$("reg-copy-text").textContent;try{navigator.clipboard.writeText(txt).then(function(){$("reg-status").textContent=t("st_copied");},function(){$("reg-status").textContent=t("st_copyfail");});}catch(e){$("reg-status").textContent=t("st_copyfail");}}
+/* 人数只校验格式（0 或正整数），不设上限：球员上限待公布，随行球迷不限。 */
+function badCount(k){var el=$("reg-form").elements[k];return (el.validity&&el.validity.badInput)||(el.value.trim()!==""&&!/^\d+$/.test(el.value.trim()));}
+function validate(o){if(!o.penya||!o.city||!o.contact||!o.email)return "e_req";if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(o.email))return "e_email";if(badCount("players")||badCount("guests"))return "e_num";if(!o.consent)return "e_consent";return "";}
+/* 报名与复制的提示存为文案键，切换语言时按新语言重新显示。 */
+function setReg(key,cls){state.reg=key?{key:key,cls:cls||""}:null;renderRegStatus();}
+function setCopy(key){state.copy=key;renderRegStatus();}
+function renderRegStatus(){
+  var st=$("reg-status"),cs=$("copy-status");
+  st.textContent=state.reg?t(state.reg.key):"";st.className="status-msg"+(state.reg&&state.reg.cls?" is-"+state.reg.cls:"");
+  cs.textContent=state.copy?t(state.copy):"";
+}
+function selectCopyText(){try{var r=document.createRange();r.selectNodeContents($("reg-copy-text"));var s=window.getSelection();s.removeAllRanges();s.addRange(r);}catch(e){}}
+function copyNow(){
+  var txt=$("reg-copy-text").textContent;
+  function fail(){selectCopyText();setCopy("st_copyfail");}
+  try{
+    if(!navigator.clipboard||!navigator.clipboard.writeText){fail();return;}
+    navigator.clipboard.writeText(txt).then(function(){setCopy("st_copied");},fail);
+  }catch(e){fail();}
+}
 $("reg-copy").addEventListener("click",function(){buildMail(formData());copyNow();});
 $("mail-copy").addEventListener("click",copyNow);
 
+function sig(o){return JSON.stringify(FIELDS.map(function(k){return o[k];}));}
+/* 结果：ok 成功；fail 已尝试但失败；skip 未配置；同一份内容已成功的不再重复提交。 */
 function saveToDb(o){
-  if(!state.sb)return Promise.resolve(false);
+  if(state.savedSig===sig(o))return Promise.resolve("ok");
+  if(!state.sb)return Promise.resolve(state.sbMissing?"fail":"skip");
   var row={lang:lang};FIELDS.forEach(function(k){row[k]=o[k];});
-  return state.sb.from("registrations").insert(row).then(function(r){return !r.error;},function(){return false;});
+  try{
+    return Promise.resolve(state.sb.from("registrations").insert(row)).then(function(r){if(r&&!r.error){state.savedSig=sig(o);return "ok";}return "fail";},function(){return "fail";});
+  }catch(e){return Promise.resolve("fail");}
 }
 function sendEndpoint(o){
-  if(!FORM_ENDPOINT)return Promise.resolve(false);
+  if(!FORM_ENDPOINT)return Promise.resolve("skip");
+  if(state.sentSig===sig(o))return Promise.resolve("ok");
   var body={_subject:t("mail_subj")+" · "+o.penya,_replyto:o.email,message:mailBody(o)};FIELDS.forEach(function(k){body[k]=o[k];});
-  return fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(body)})
-    .then(function(r){return r.ok;},function(){return false;});
+  try{
+    return fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(body)})
+      .then(function(r){if(r.ok){state.sentSig=sig(o);return "ok";}return "fail";},function(){return "fail";});
+  }catch(e){return Promise.resolve("fail");}
 }
 $("reg-form").addEventListener("submit",function(e){
   e.preventDefault();
-  var o=formData(),err=validate(o),st=$("reg-status");
-  if(err){st.textContent=err;return;}
-  $("reg-submit").disabled=true;st.textContent=t("st_sending");
+  var o=formData(),err=validate(o);
+  if(err){setReg(err,"err");return;}
+  $("reg-submit").disabled=true;setReg("st_sending");setCopy(null);
   Promise.all([sendEndpoint(o),saveToDb(o)]).then(function(r){
-    if(r[0]){st.textContent=t("st_ok");$("mailbox").style.display="none";}
-    else{buildMail(o);st.textContent=r[1]?t("st_saved"):t("st_mail");}
-  }).then(function(){$("reg-submit").disabled=false;});
+    var mail=r[0],db=r[1];
+    if(mail==="ok"){setReg(db==="ok"?"st_ok":"st_sent","ok");$("mailbox").style.display="none";}
+    else if(db==="ok"){buildMail(o);setReg("st_saved","warn");}
+    else if(mail==="skip"&&db==="skip"){buildMail(o);setReg("st_mail","warn");}
+    else{buildMail(o);setReg("st_fail","err");}
+  },function(){buildMail(o);setReg("st_fail","err");}).then(function(){$("reg-submit").disabled=false;});
 });
 
 applyLang();
@@ -1073,19 +1138,33 @@ var CFG=window.APC_CONFIG||{};
 if(CFG.SUPABASE_URL&&CFG.SUPABASE_ANON_KEY&&window.supabase){
   var sb=window.supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_ANON_KEY);
   state.sb=sb;
-  var timer=setTimeout(function(){if(!state.liveLoaded){state.liveMsg="live_off";renderCharity();}},10000);
+  var timer=setTimeout(function(){if(!state.liveLoaded){state.fail.matches=true;renderCharity();}},10000);
   function mapMatch(r){return {id:r.id,no:r.no,time:r.time,home:r.home,away:r.away,hs:r.home_score,as:r.away_score,status:r.status};}
-  function loadConfig(){return sb.from("config").select("data").eq("id",1).maybeSingle().then(function(res){if(!res.error){state.config=res.data&&res.data.data&&Object.keys(res.data.data).length?res.data.data:null;renderAll();}});}
-  function loadMatches(){return sb.from("matches").select("*").order("no",{ascending:true}).then(function(res){
-    if(res.error){state.liveMsg="live_off";renderCharity();return;}
-    clearTimeout(timer);state.liveLoaded=true;state.matches=(res.data||[]).map(mapMatch);renderAll();});}
-  loadConfig();loadMatches();
+  function failed(src){state.fail[src]=true;renderCharity();}
+  function loadConfig(){return Promise.resolve(sb.from("config").select("data").eq("id",1).maybeSingle()).then(function(res){
+    if(!res||res.error){failed("config");return;}
+    state.fail.config=false;state.config=res.data&&res.data.data&&Object.keys(res.data.data).length?res.data.data:null;renderAll();
+  },function(){failed("config");});}
+  function loadMatches(){return Promise.resolve(sb.from("matches").select("*").order("no",{ascending:true})).then(function(res){
+    if(!res||res.error){failed("matches");return;}
+    clearTimeout(timer);state.fail.matches=false;state.liveLoaded=true;state.lastSync=new Date();state.matches=(res.data||[]).map(mapMatch);renderAll();
+  },function(){failed("matches");});}
+  /* 比分、队伍和公益配置一起刷新：实时推送受阻时，轮询也能同步后台对名单和配捐的改动。 */
+  function refresh(){return Promise.all([loadConfig(),loadMatches()]);}
+  refresh();
+  var subscribedOnce=false;
   sb.channel("apc-live")
     .on("postgres_changes",{event:"*",schema:"public",table:"matches"},function(){loadMatches();})
     .on("postgres_changes",{event:"*",schema:"public",table:"config"},function(){loadConfig();})
-    .subscribe();
-  /* fallback refresh every 60s in case realtime is blocked */
-  setInterval(function(){loadMatches();},60000);
+    .subscribe(function(status){if(status==="SUBSCRIBED"){if(subscribedOnce)refresh();subscribedOnce=true;}});
+  /* 回退轮询：正常 60 秒一次，断线时 15 秒重试；网络恢复或页面回到前台时立即刷新。 */
+  (function poll(){setTimeout(function(){refresh().then(poll,poll);},(state.fail.matches||state.fail.config)?15000:60000);})();
+  window.addEventListener("online",refresh);
+  window.addEventListener("offline",function(){failed("matches");});
+  document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")refresh();});
+}else if(CFG.SUPABASE_URL&&CFG.SUPABASE_ANON_KEY){
+  /* Supabase 脚本未能加载（例如 CDN 被拦截）：比分显示断线提示，报名按“登记失败”引导手动发送。 */
+  state.sbMissing=true;state.fail.matches=true;renderCharity();
 }
 })();
 </script>
