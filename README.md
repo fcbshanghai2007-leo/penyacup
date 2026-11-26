@@ -1,18 +1,19 @@
-# penyacup.asia 上线指南
+# penyacup.asia 维护指南
 
-网站由三部分组成，全部在海外，免费额度足够第一届使用：
+网站是纯静态页面，由 GitHub Pages 从本仓库 `main` 分支根目录直接发布，没有构建步骤。由三部分组成：
 
 | 部分 | 用途 | 服务 |
 | --- | --- | --- |
 | 网页托管 | 放网站文件，绑定 penyacup.asia | GitHub Pages |
 | 数据库 | 实时比分、进球公益、参赛名单、报名记录、管理员登录 | Supabase |
-| 邮件转发 | 报名自动发到 fcbshanghai2007@gmail.com | Formspree |
+| 邮件转发（可选，目前未配置） | 报名自动发到 fcbshanghai2007@gmail.com | Formspree |
 
 文件说明：
 
-- `index.html`：网站首页，中英韩三语。
+- `index.html`：网站首页，中文、English、한국어、Español、Français 五语；包含报名和比分逻辑。
 - `admin.html`：管理后台，网址是 penyacup.asia/admin.html，需登录。
-- `config.js`：填写 Supabase 和 Formspree 的地址（唯一需要你改的文件）。
+- `config.js`：Supabase 地址与公开密钥、Formspree 地址（`FORM_ENDPOINT`，目前留空）。
+- `CNAME`：绑定 penyacup.asia，不要删除。
 - `schema.sql`：数据库结构，在 Supabase 里运行一次。
 
 建议用 fcbshanghai2007@gmail.com 注册以下所有服务，方便球迷会统一管理。
@@ -40,9 +41,22 @@
 3. 复制表单地址（形如 `https://formspree.io/f/xxxxxxx`），填进 `config.js` 的 `FORM_ENDPOINT`。
 4. 在表单设置里把 penyacup.asia 加入允许的域名。
 
-不填这一步也能用：报名照样存进数据库，在后台能看到；只是邮箱收不到通知，报名者会被提示点“发送邮件”。
+不填这一步也能用（目前线上就是这样）：报名照样存进数据库，在后台能看到；邮箱收不到通知。
+
+提交后页面按实际结果提示（五种语言）：
+
+| 数据库 | 自动邮件 | 页面提示 |
+| --- | --- | --- |
+| 成功 | 成功 | 已登记，并已发送至官方邮箱 |
+| 失败 | 成功 | 已发送至官方邮箱 |
+| 成功 | 失败或未配置 | 已登记，请点“发送邮件”或复制内容手动发送 |
+| 失败 | 失败或未配置 | 登记未成功，请手动发送，或稍后再点“提交报名”重试 |
+
+需要手动发送时，页面显示可复制的报名内容；浏览器不允许自动复制时会选中文字，提示手动复制。同一份内容已成功的部分重试时不会重复提交。
 
 ## 第 3 步：上线网页（GitHub Pages，已完成）
+
+- 发布方式：GitHub Pages 经典模式（Deploy from a branch），合并到 `main` 后由 GitHub 自动运行“pages build and deployment”，约 1 分钟后线上更新。可在仓库 **Actions** 页查看是否成功。
 
 - 仓库：https://github.com/fcbshanghai2007-leo/penyacup（公开仓库，只含网页文件和公开密钥）
 - 设置：仓库 **Settings → Pages**，Source 为 **Deploy from a branch**，分支 `main`，文件夹 `/ (root)`。
@@ -66,18 +80,22 @@
 
 ## 以后怎么修改网站
 
-推荐做法：在 Claude Code 里说「修改 `~/penyacup` 里的网站：……」。修改后推送到 GitHub，约 1 分钟网站自动更新。
-
-自己用命令行更新：
+`main` 就是线上版本，推送到 `main` 等于直接发布。建议每次修改都走分支和 PR：
 
 ```bash
 cd ~/penyacup
-git pull
+git switch main && git pull
+git switch -c fix/简短说明
 # 修改文件后：
 git add -A
 git commit -m "说明改了什么"
-git push
+git push -u origin HEAD
+gh pr create
 ```
+
+在 PR 里写清楚改了什么、怎样验证的；确认后合并到 `main`，等 Pages 发布完成，再打开 https://penyacup.asia/ 复核。
+
+本地预览：在仓库目录运行 `python3 -m http.server 8000`，打开 http://localhost:8000 。本地页面会连接线上 Supabase，测试报名请勿用真实资料，测试完到后台删除。
 
 注意：
 
@@ -86,10 +104,10 @@ git push
 
 ## 第 5 步：上线后检查清单
 
-- [ ] 用手机打开 penyacup.asia，检查中、英、韩三种语言。
+- [ ] 用手机打开 penyacup.asia，检查五种语言（重点西语、法语的顶栏和报名提示）。
 - [ ] 登录后台，点“填入网站默认名单”→“保存名单”，再为三支队伍上传 logo。
 - [ ] 后台添加一场测试比赛，改比分，确认首页比分和进球公益实时变化；测试完删除。
-- [ ] 用另一个邮箱提交一次测试报名，确认 fcbshanghai2007@gmail.com 收到邮件、后台能看到记录；测试完在 Supabase → Table Editor → registrations 删除。
+- [ ] 用另一个邮箱提交一次测试报名，确认后台能看到记录、页面提示与实际结果一致（已配置 Formspree 时再确认 fcbshanghai2007@gmail.com 收到邮件）；测试完在 Supabase → Table Editor → registrations 删除。
 
 ## 比赛日怎么用
 
