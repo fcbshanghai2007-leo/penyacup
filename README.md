@@ -6,13 +6,13 @@
 | --- | --- | --- |
 | 网页托管 | 放网站文件，绑定 penyacup.asia | GitHub Pages |
 | 数据库 | 实时比分、进球公益、参赛名单、报名记录、管理员登录 | Supabase |
-| 邮件转发（可选，目前未配置） | 报名自动发到 fcbshanghai2007@gmail.com | Formspree |
+| 邮件转发（已配置） | 报名自动发到 fcbshanghai2007@gmail.com | Formspree |
 
 文件说明：
 
 - `index.html`：网站首页，中文、English、한국어、Español、Français 五语；包含报名和比分逻辑。
 - `admin.html`：管理后台，网址是 penyacup.asia/admin.html，需登录。
-- `config.js`：Supabase 地址与公开密钥、Formspree 地址（`FORM_ENDPOINT`，目前留空）。
+- `config.js`：Supabase 地址与公开密钥、Formspree 地址（`FORM_ENDPOINT`）。
 - `CNAME`：绑定 penyacup.asia，不要删除。
 - `schema.sql`：数据库结构，在 Supabase 里运行一次。
 
@@ -41,7 +41,7 @@
 3. 复制表单地址（形如 `https://formspree.io/f/xxxxxxx`），填进 `config.js` 的 `FORM_ENDPOINT`。
 4. 在表单设置里把 penyacup.asia 加入允许的域名。
 
-不填这一步也能用（目前线上就是这样）：报名照样存进数据库，在后台能看到；邮箱收不到通知。
+不填这一步也能用：报名照样存进数据库，在后台能看到；邮箱收不到通知。
 
 提交后页面按实际结果提示（五种语言）：
 
