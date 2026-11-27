@@ -12,6 +12,7 @@
 
 - `index.html`：网站首页，中文、English、한국어、Español、Français 五语；包含报名和比分逻辑。
 - `admin.html`：管理后台，网址是 penyacup.asia/admin.html，需登录。
+- `logo-pbs-wide.png`、`favicon-32.png`、`icon-180.png`、`icon-512.png`：页头横版会标与浏览器标签图标，与官网和 20 周年网站同一套原件。
 - `config.js`：Supabase 地址与公开密钥、Formspree 地址（`FORM_ENDPOINT`）。
 - `CNAME`：绑定 penyacup.asia，不要删除。
 - `schema.sql`：数据库结构，在 Supabase 里运行一次。

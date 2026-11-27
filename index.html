@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Barça Asia Penya Cup 2027 · Més que un Gol</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-180.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;600&family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap">
 <style>
 :root{
@@ -14,9 +17,9 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-/* 锚点跳转时让出吸顶导航的高度（桌面单排约 57px，640px 以下两排约 105px） */
-[id]{scroll-margin-top:64px}
-@media(max-width:640px){[id]{scroll-margin-top:112px}}
+/* 锚点跳转时让出吸顶导航的高度（含红蓝条：桌面单排约 62px，767px 以下两排约 115px） */
+[id]{scroll-margin-top:70px}
+@media(max-width:767px){[id]{scroll-margin-top:122px}}
 body{margin:0;background:var(--ink);color:#fff;font-family:var(--cn);font-size:15px;line-height:1.65}
 a{color:var(--or)}
 .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
@@ -27,10 +30,12 @@ a{color:var(--or)}
 .tbd{color:var(--line);font-style:normal}
 
 /* nav */
-nav.top{position:sticky;top:0;z-index:20;background:var(--ink);border-bottom:1px solid #2a2a2a}
+nav.top{position:sticky;top:0;z-index:20;background:#000}
+nav.top .stripe{height:6px}
 nav.top .wrap{max-width:1440px;display:flex;align-items:center;gap:12px;min-height:56px;flex-wrap:nowrap}
-nav.top .brand{font-family:var(--display);font-size:24px;letter-spacing:.02em;color:#fff;text-decoration:none;margin-right:auto;white-space:nowrap}
-nav.top .brand b{color:var(--or);font-weight:400}
+nav.top .brand{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto;white-space:nowrap}
+nav.top .brand img{display:block;height:36px;width:auto}
+nav.top .brand b{font-family:var(--display);font-weight:400;font-size:17px;line-height:1;letter-spacing:.02em;background:var(--or);color:#000;padding:4px 6px 3px}
 nav.top .links{display:flex;gap:2px;white-space:nowrap}
 nav.top .links a{color:#fff;text-decoration:none;font-family:var(--label);font-size:13px;letter-spacing:.055em;padding:8px 6px;min-height:44px;display:flex;align-items:center}
 nav.top .links a:hover{color:var(--or)}
@@ -153,7 +158,10 @@ footer p{color:var(--line);font-size:13px;max-width:760px}
 <style>
 .lang{display:flex;border:1px solid #4a4a4a}
 .lang button{min-height:40px;padding:6px 10px;background:transparent;color:#fff;font-family:var(--label);font-size:13px;letter-spacing:.08em;font-weight:600}
-@media(max-width:640px){nav.top .wrap{gap:6px 10px;padding-block:6px}nav.top .brand{width:100%}.lang button{padding-inline:6px}nav.top .menu-btn,nav.top .cta{padding-inline:8px}}
+/* 窄屏两排：第一排 logo 与报名按钮，第二排语言与目录 */
+@media(max-width:767px){nav.top .wrap{gap:3px 10px;padding-block:6px}nav.top .wrap::after{content:"";order:2;width:100%}nav.top .cta{order:1}nav.top .lang{order:3;margin-right:auto}nav.top .menu-btn{order:4}.lang button{padding-inline:6px}nav.top .menu-btn,nav.top .cta{padding-inline:8px}}
+@media(max-width:380px){nav.top .wrap{padding-inline:12px;column-gap:6px}}
+@media(max-width:360px){nav.top .brand{gap:6px}nav.top .brand img{height:30px}nav.top .brand b{font-size:15px}.lang button{padding-inline:4px}}
 .lang button[aria-pressed="true"]{background:var(--or);color:#000}
 nav.top .menu-btn{display:none;min-height:44px;padding:10px 14px;background:transparent;color:#fff;border:1px solid #4a4a4a;font-weight:700;align-items:center;gap:8px;cursor:pointer}
 @media (max-width:1240px){
@@ -178,7 +186,7 @@ a.btn-or{display:inline-flex;align-items:center;text-decoration:none;min-height:
 </style>
 <nav class="top" aria-label="Main">
   <div class="wrap">
-    <a class="brand" href="#top">BARÇA ASIA PENYA CUP <b>2027</b></a>
+    <a class="brand" href="#top" aria-label="Penya Blaugrana Shanghai · Barça Asia Penya Cup 2027"><img src="logo-pbs-wide.png" alt="Penya Blaugrana Shanghai" width="405" height="120"><b>ASIA CUP 2027</b></a>
     <div class="links" id="nav-links">
       <a href="#info" data-i="nav_info"></a>
       <a href="#about" data-i="nav_about"></a>
@@ -196,8 +204,10 @@ a.btn-or{display:inline-flex;align-items:center;text-decoration:none;min-height:
       <button type="button" data-lang="es" lang="es" aria-label="Español" title="Español">ES</button>
       <button type="button" data-lang="fr" lang="fr" aria-label="Français" title="Français">FR</button>
     </div>
+    <a class="cta" href="#register" data-i="nav_reg"></a>
     <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav-links"><span aria-hidden="true">☰</span><span data-i="nav_menu"></span></button>
   </div>
+  <div class="stripe" aria-hidden="true"></div>
 </nav>
 
 <header class="hero" id="top">
@@ -1058,7 +1068,7 @@ renderPenyaPick();
 $("f-penya-pick").addEventListener("change",function(){syncPenyaPick(true);});
 $("reg-form").addEventListener("reset",function(){setTimeout(function(){syncPenyaPick(false);},0);});
 $("menu-btn").addEventListener("click",function(){var n=document.querySelector("nav.top"),o=n.classList.toggle("open");this.setAttribute("aria-expanded",String(o));});
-document.querySelectorAll("#nav-links a").forEach(function(a){a.addEventListener("click",function(){document.querySelector("nav.top").classList.remove("open");$("menu-btn").setAttribute("aria-expanded","false");});});
+document.querySelectorAll("#nav-links a, nav.top .cta").forEach(function(a){a.addEventListener("click",function(){document.querySelector("nav.top").classList.remove("open");$("menu-btn").setAttribute("aria-expanded","false");});});
 var FIELDS=["type","region","penya","city","contact","email","phone","players","guests","days","gift","notes"];
 function formData(){var f=$("reg-form"),o={};FIELDS.forEach(function(k){o[k]=(f.elements[k].value||"").trim();});
   o.daysLabel=f.elements.days.options[f.elements.days.selectedIndex].textContent;o.typeLabel=f.elements.type.options[f.elements.type.selectedIndex].textContent;o.regionLabel=f.elements.region.options[f.elements.region.selectedIndex].textContent;o.consent=f.elements.consent.checked;return o;}
